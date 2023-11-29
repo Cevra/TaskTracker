@@ -3,6 +3,7 @@ module.exports = {
   theme: {
     extend: {
       backgroundColor: {
+        modal: '#7496B6',
         layout: "#C7DEF4",
         circle: "#B0D9F7",
         "shade-blue": "#B6D4EE",

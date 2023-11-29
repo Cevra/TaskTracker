@@ -1,5 +1,4 @@
 import { Text, View } from 'react-native';
-import { addMonths, isSameMonth } from 'date-fns';
 
 const Employee = ({ name, color }) => {
   return (

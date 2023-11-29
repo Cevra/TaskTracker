@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
-import { View, useWindowDimensions  } from 'react-native';
-import {  GestureHandlerRootView, Gesture, GestureDetector } from 'react-native-gesture-handler';
+import { TouchableOpacity, useWindowDimensions } from 'react-native';
+import { GestureHandlerRootView, Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -8,11 +8,11 @@ import Animated, {
   runOnJS,
   Easing,
 } from 'react-native-reanimated';
-import { addMonths, isSameMonth } from 'date-fns';
+import { addMonths, format } from 'date-fns';
 import CalendarItem from './CalendarItem';
 import DefaultLayout from '../layouts/Default';
 import { generateCalendarDaysByDate } from '../utils/date';
-import { MONTHS } from '../constants';
+import CalendarDetailsModal from './CalendarDetailsModal';
 
 const INCREMENT = 1;
 const DECREMENT = -1;
@@ -23,24 +23,30 @@ export default function Calendar() {
 
     return { date: today, days: generateCalendarDaysByDate(today) };
   });
+  const [targetDate, setTargetDate] = useState(null);
+  const [isVisible, setIsVisible] = useState(false);
   const dimensions = useWindowDimensions();
   const offset = useSharedValue(0);
   const opacity = useSharedValue(1);
 
   const handleChange = useCallback((step) => {
     setCalendar(({ date: oldDate }) => {
-
       const newDate = addMonths(oldDate, step);
-      //  new Date(oldDate.getFullYear(), oldDate.getMonth() + step, 1);
       return { date: newDate, days: generateCalendarDaysByDate(newDate) };
     })
   }, []);
 
+  console.log(targetDate);
 
   const renderItem = useCallback(({ item }) => {
     return (
       <Animated.View>
-        <CalendarItem item={item} />
+        <TouchableOpacity onPress={() => {
+            setTargetDate(item.date);
+            setIsVisible(true);
+          }}>
+          <CalendarItem item={item} />
+        </TouchableOpacity>
       </Animated.View>
     );
   }, []);
@@ -72,7 +78,7 @@ export default function Calendar() {
         });
       });
 
-      opacity.value = withTiming(0, { duration: 500 , easing: Easing.inOut(Easing.quad)}, () => {
+      opacity.value = withTiming(0, { duration: 500, easing: Easing.inOut(Easing.quad) }, () => {
         opacity.value = withTiming(1, { duration: 800 });
       });
 
@@ -80,11 +86,12 @@ export default function Calendar() {
 
   return (
     <DefaultLayout>
+      <CalendarDetailsModal isVisible={isVisible} setIsVisible={setIsVisible} date={targetDate} />
       <GestureHandlerRootView style={{ flex: 1 }}>
         <GestureDetector gesture={pan}>
           <Animated.View className="w-full h-max" style={[{}, animatedStyles]}>
-            <Animated.Text className="w-max mt-4 text-right text-2xl font-bold capitalize">
-              {MONTHS[calendar.date.getMonth()]} {calendar.date.getFullYear()}
+            <Animated.Text className="w-max mt-12 text-right text-2xl font-bold capitalize">
+              {format(calendar.date, 'MMMM yyyy')}
             </Animated.Text>
             <Animated.FlatList
               data={calendar.days}
