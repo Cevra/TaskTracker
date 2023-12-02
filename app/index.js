@@ -13,6 +13,7 @@ import { useFonts } from "expo-font";
 import { resolveAssetSource } from "react-native";
 
 import * as SplashScreen from "expo-splash-screen";
+import { SafeAreaView } from "react-native";
 
 SplashScreen.preventAutoHideAsync();
 const HomeScreen = () => {
@@ -31,15 +32,14 @@ const HomeScreen = () => {
     }
   }, [fontsLoaded, fontError]);
 
-  // Configure the status bar
 
   return (
-    <View className="w-full bg-secondary h-screen ">
+    <SafeAreaView className="w-full bg-secondary h-screen ">
       <ImageBackground
         className="w-full bg-secondary h-screen flex-1 items-center justify-center"
         source={require("../assets/background_bubbles.jpg")}
       >
-        <View className=" inline-flex flex items-center justify-center ">
+        <View className=" inline-flex items-center justify-center ">
         {fontsLoaded ? (
           <Text
             style={{ fontFamily: "Poppins" }}
@@ -59,7 +59,7 @@ const HomeScreen = () => {
         </View>
         <Image
           className="w-60 h-60  mt-5 rounded-full object-cover"
-          source={require("../assets/screen_one_worker.jpg")}
+          source={require("../assets/worker_logo.jpg")}
         />
         <View>
         {fontsLoaded ? (
@@ -86,7 +86,7 @@ const HomeScreen = () => {
           </TouchableOpacity>
         </View>
       </ImageBackground>
-    </View>
+    </SafeAreaView>
   );
 };
 export default HomeScreen;
