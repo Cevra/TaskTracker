@@ -1,7 +1,3 @@
-import Calendar from './src/calendar';
+ import 'expo-router/entry';
 
-export default function App() {
-  return (
-    <Calendar />
-  );
-}
+ 
