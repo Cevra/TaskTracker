@@ -10,8 +10,8 @@ import Animated, {
 } from 'react-native-reanimated';
 import { addMonths, format } from 'date-fns';
 import CalendarItem from './CalendarItem';
-import DefaultLayout from '../layouts/Default';
-import { generateCalendarDaysByDate } from '../utils/date';
+import DefaultLayout from '../../layouts/Default';
+import { generateCalendarDaysByDate } from '../../utils/date';
 import CalendarDetailsModal from './CalendarDetailsModal';
 
 const INCREMENT = 1;

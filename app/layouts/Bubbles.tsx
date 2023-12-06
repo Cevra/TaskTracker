@@ -1,6 +1,8 @@
+import React from 'react';
 import { SafeAreaView,View } from "react-native";
+import { LayoutProps } from '../../types';
 
-const BubbleLayout = ({ children }) => {
+const BubbleLayout = ({ children }: LayoutProps) => {
   return (
       <SafeAreaView className="w-full h-screen bg-layout justify-center items-center">
         <View className="bg-circle w-52 h-52 rounded-full -left-9 -top-3 absolute" />
