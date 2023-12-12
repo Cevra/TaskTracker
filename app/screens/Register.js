@@ -29,6 +29,7 @@ const Register = () => {
         companyID: CompanyID,
         adress: Adress,
       });
+      navigation.push("/(drawer)/ScheduleAMember");
 
       console.log("User data updated successfully");
     } catch (error) {

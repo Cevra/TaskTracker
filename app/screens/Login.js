@@ -16,6 +16,7 @@ const Login = () => {
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const user = userCredential.user;
+        navigation.push("/(drawer)/ScheduleAMember");
       })
       .catch((error) => {
         const errorCode = error.code;
