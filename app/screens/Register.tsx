@@ -5,10 +5,8 @@ import { View, Text, TouchableOpacity, TextInput } from 'react-native';
 // import { useRouter } from 'expo-router';
 import { Auth } from '@/services/auth';
 import { UserRepository } from '../repositories/users';
-import BubbleLayout from '../layouts/Bubbles';
 import { Company } from '@/models/company';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
+import TopBubbleLayout from '@/layouts/TopBubble';
 import WorkerLogo from 'assets/icons/logo.svg';
 
 const Register = () => {
@@ -32,46 +30,46 @@ const Register = () => {
     }
   };
   return (
-    <BubbleLayout>
-      <View className="inline-flex items-center justify-center">
+    <TopBubbleLayout>
+      <View className="inline-flex items-center justify-center pt-28">
         <Text
-          style={{ fontFamily: 'Square Peg', fontSize: 80 }}
-          className="mt-0 text-black  leading-relaxed"
+          style={{ fontFamily: 'Square Peg' }}
+          className="mt-0 text-black text-8xl  leading-relaxed"
         >
           TaskTracker
         </Text>
       </View>
-      <WorkerLogo />
+      <WorkerLogo width={200} height={200} />
       <View className="flex  ">
         <View>
           <TextInput
-            className="w-80 h-16 mt-5 bg-secondary text-center text-xl  flex items-center content-center justify-center  rounded-full"
+            className="w-80 h-16 mt-5 bg-input-secondary text-center text-xl  flex items-center content-center justify-center rounded"
             placeholder="Company name"
             onChangeText={(text) => setCompanyName(text)}
             value={companyName}
           />
 
           <TextInput
-            className="w-80 h-16 mt-8 bg-secondary text-center flex items-center text-xl content-center justify-center rounded-full"
+            className="w-80 h-16 mt-8 bg-input-secondary text-center flex items-center text-xl content-center justify-center rounded"
             placeholder="Company ID"
             onChangeText={(text) => setCompanyId(text)}
             value={companyId}
           />
           <TextInput
-            className="w-80 h-16 mt-8 bg-secondary text-center flex items-center text-xl content-center justify-center  rounded-full"
-            placeholder="Adress"
+            className="w-80 h-16 mt-8 bg-input-secondary text-center flex items-center text-xl content-center justify-center rounded"
+            placeholder="Address"
             onChangeText={(text) => setAddress(text)}
             value={address}
           />
         </View>
 
         <TouchableOpacity onPress={onRegisterPress}>
-          <View className="w-80 h-16  mt-10 mb-10 bg-primary text-center flex flex-wrap items-center content-center justify-center ">
-            <Text className=" text-white text-xl  font-normal">REGISTER</Text>
+          <View className="w-80 h-16  mt-10 mb-10 bg-primary text-center flex flex-wrap items-center content-center justify-center rounded">
+            <Text className=" text-white text-xl font-normal">REGISTER</Text>
           </View>
         </TouchableOpacity>
       </View>
-    </BubbleLayout>
+    </TopBubbleLayout>
   );
 };
 

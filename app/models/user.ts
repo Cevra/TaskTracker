@@ -14,7 +14,7 @@ export class User {
     readonly name: string,
   ) {}
 
-  static Create({ id, email, name }: CreateUserProps) {
+  public static Create({ id, email, name }: CreateUserProps) {
     if (!EMAIL_REGEX.test(email)) {
       throw new ValidationError('Invalid email');
     }
@@ -28,5 +28,24 @@ export class User {
 
   public addWorkerDetails(payload: Worker) {
     this.worker = payload;
+  }
+
+  public toJson(): Record<string, string | Record<string, string> | undefined> {
+    const record: Record<string, string | Record<string, string> | undefined> =
+      {
+        id: this.id,
+        email: this.email,
+        name: this.name,
+      };
+
+    if (this.company) {
+      record.company = this.company.toJson();
+    }
+
+    if (this.worker) {
+      record.worker = this.worker.toJson();
+    }
+
+    return record;
   }
 }
