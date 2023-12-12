@@ -7,13 +7,13 @@ class Users {
 
   add(user: User) {
     const userRef = doc(db, this.#collectionName, user.id);
-    return setDoc(userRef, user);
+    return setDoc(userRef, user.toJson());
   }
 
   update(user: User) {
     const userRef = doc(db, this.#collectionName, user.id);
 
-    return updateDoc(userRef, { ...user });
+    return updateDoc(userRef, user.toJson());
   }
 }
 

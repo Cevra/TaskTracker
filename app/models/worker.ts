@@ -1,1 +1,5 @@
-export class Worker {}
+export class Worker {
+  toJson(): Record<string, string> {
+    return {};
+  }
+}

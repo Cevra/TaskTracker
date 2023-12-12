@@ -16,10 +16,12 @@
     "skipLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@assets/*": ["./assets/*"],
       "~/*": ["/*"],
-      "@/*": ["app/*"],
+      "@/*": ["./app/*"],
     }
   },
   "exclude": ["node_modules"],
+  "include": ["./App.tsx", "./app/**/*", "./*.js"],
   "extends": "expo/tsconfig.base"
 }

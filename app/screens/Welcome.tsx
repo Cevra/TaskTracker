@@ -2,26 +2,24 @@ import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import BubbleLayout from '@/layouts/Bubbles';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import WorkerLogo from 'assets/icons/logo.svg';
+import WorkerLogo from '@assets/icons/logo.svg';
 
 const Welcome = () => {
   const navigation = useRouter();
 
   return (
     <BubbleLayout>
-      <View className=" inline-flex items-center justify-center ">
+      <View className="items-center justify-center pt-28">
         <Text
           style={{ fontFamily: 'Poppins' }}
-          className="mt-6  text-black text-3xl  leading-normal"
+          className="mt-6 text-black text-3xl leading-normal"
         >
           Welcome to
         </Text>
 
         <Text
-          style={{ fontFamily: 'Square Peg', fontSize: 80 }}
-          className="mt-3 text-black   leading-relaxed"
+          style={{ fontFamily: 'Square Peg' }}
+          className="mt-3 text-8xl text-black leading-relaxed"
         >
           TaskTracker
         </Text>

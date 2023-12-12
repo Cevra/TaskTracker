@@ -10,7 +10,7 @@ module.exports = {
         layout: '#C7DEF4',
         circle: '#B0D9F7',
         'shade-blue': '#B6D4EE',
-        // secondary: '#AFD8F6',
+        'input-secondary': '#AFD8F6',
       },
       fontFamily: {
         'square-peg': ['Square Peg', 'sans-serif'],

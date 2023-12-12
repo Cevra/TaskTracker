@@ -8,6 +8,6 @@ export const MAX_CALENDAR_ITEMS =
 export const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export const FONTS = {
-  'Square Peg': require('@/assets/fonts/SquarePeg-Regular.ttf'),
-  Poppins: require('@/assets/fonts/Poppins-Regular.ttf'),
+  'Square Peg': require('@assets/fonts/SquarePeg-Regular.ttf'),
+  Poppins: require('@assets/fonts/Poppins-Regular.ttf'),
 };
