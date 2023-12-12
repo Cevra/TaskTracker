@@ -1,6 +1,10 @@
 import React, { useCallback, useState } from 'react';
 import { TouchableOpacity, useWindowDimensions } from 'react-native';
-import { GestureHandlerRootView, Gesture, GestureDetector } from 'react-native-gesture-handler';
+import {
+  GestureHandlerRootView,
+  Gesture,
+  GestureDetector,
+} from 'react-native-gesture-handler';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -9,7 +13,7 @@ import Animated, {
   Easing,
 } from 'react-native-reanimated';
 import { addMonths, format } from 'date-fns';
-import CalendarItem from './CalendarItem';
+import CalendarItem, { CalendarItemProps } from './CalendarItem';
 import DefaultLayout from '../../layouts/Default';
 import { generateCalendarDaysByDate } from '../../utils/date';
 import CalendarDetailsModal from './CalendarDetailsModal';
@@ -23,28 +27,30 @@ export default function Calendar() {
 
     return { date: today, days: generateCalendarDaysByDate(today) };
   });
-  const [targetDate, setTargetDate] = useState(null);
+  const [targetDate, setTargetDate] = useState<Date>(new Date());
   const [isVisible, setIsVisible] = useState(false);
   const dimensions = useWindowDimensions();
   const offset = useSharedValue(0);
   const opacity = useSharedValue(1);
 
-  const handleChange = useCallback((step) => {
+  const handleChange = useCallback((step: number) => {
     setCalendar(({ date: oldDate }) => {
       const newDate = addMonths(oldDate, step);
       return { date: newDate, days: generateCalendarDaysByDate(newDate) };
-    })
+    });
   }, []);
 
   console.log(targetDate);
 
-  const renderItem = useCallback(({ item }) => {
+  const renderItem = useCallback(({ item }: CalendarItemProps) => {
     return (
       <Animated.View>
-        <TouchableOpacity onPress={() => {
+        <TouchableOpacity
+          onPress={() => {
             setTargetDate(item.date);
             setIsVisible(true);
-          }}>
+          }}
+        >
           <CalendarItem item={item} />
         </TouchableOpacity>
       </Animated.View>
@@ -52,41 +58,45 @@ export default function Calendar() {
   }, []);
 
   const animatedStyles = useAnimatedStyle(() => ({
-    transform: [
-      { translateX: offset.value },
-    ],
-    opacity: opacity.value
+    transform: [{ translateX: offset.value }],
+    opacity: opacity.value,
   }));
 
-  const pan = Gesture.Pan()
-    .onFinalize(({ translationX }) => {
-      const deviceWidth = dimensions.width;
-      const isLeftSwipe = translationX < -100;
-      const isRightSwipe = translationX > 100;
+  const pan = Gesture.Pan().onFinalize(({ translationX }) => {
+    const deviceWidth = dimensions.width;
+    const isLeftSwipe = translationX < -100;
+    const isRightSwipe = translationX > 100;
 
-      if (!isLeftSwipe && !isRightSwipe) {
-        return;
-      }
+    if (!isLeftSwipe && !isRightSwipe) {
+      return;
+    }
 
-      const step = isLeftSwipe ? INCREMENT : DECREMENT;
-      const offsetStart = isLeftSwipe ? -deviceWidth : deviceWidth;
-      runOnJS(handleChange)(step);
+    const step = isLeftSwipe ? INCREMENT : DECREMENT;
+    const offsetStart = isLeftSwipe ? -deviceWidth : deviceWidth;
+    runOnJS(handleChange)(step);
 
-      offset.value = withTiming(offsetStart, { duration: 500 }, () => {
-        offset.value = withTiming(-offsetStart, { duration: 0 }, () => {
-          offset.value = withTiming(0, { duration: 500 });
-        });
+    offset.value = withTiming(offsetStart, { duration: 500 }, () => {
+      offset.value = withTiming(-offsetStart, { duration: 0 }, () => {
+        offset.value = withTiming(0, { duration: 500 });
       });
-
-      opacity.value = withTiming(0, { duration: 500, easing: Easing.inOut(Easing.quad) }, () => {
-        opacity.value = withTiming(1, { duration: 800 });
-      });
-
     });
+
+    opacity.value = withTiming(
+      0,
+      { duration: 500, easing: Easing.inOut(Easing.quad) },
+      () => {
+        opacity.value = withTiming(1, { duration: 800 });
+      },
+    );
+  });
 
   return (
     <DefaultLayout>
-      <CalendarDetailsModal isVisible={isVisible} setIsVisible={setIsVisible} date={targetDate} />
+      <CalendarDetailsModal
+        isVisible={isVisible}
+        setIsVisible={setIsVisible}
+        date={targetDate}
+      />
       <GestureHandlerRootView style={{ flex: 1 }}>
         <GestureDetector gesture={pan}>
           <Animated.View className="w-full h-max" style={[{}, animatedStyles]}>

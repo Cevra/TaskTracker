@@ -1,6 +1,7 @@
-class User {
-    id: number;
-    name: string;
-    email: string;
-    password: string;
+export class Company {
+  constructor(
+    readonly companyName: string,
+    readonly companyId: string,
+    readonly address: string,
+  ) {}
 }

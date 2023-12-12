@@ -1,19 +1,31 @@
 import type { ReactNode } from 'react';
 
 export type LayoutProps = {
-    children: ReactNode;
-}
+  children: ReactNode;
+};
 
 export interface CreateUserProps {
-    id: string;
-    name: string;
-    email: string;
-    password: string;
-    confirmPassword: string;
-    name: string;
+  id: string;
+  email: string;
+  name: string;
 }
 
-type UpdateUserProps = Optional<CreateUserProps> & {
-    company?: any;
-    worker?: any;
+export interface SignUpProps {
+  email: string;
+  name: string;
+  password: string;
+  confirmPassword: string;
 }
+
+export type UpdateUserProps = Optional<CreateUserProps> & {
+  company?: Record<string, string>;
+  worker?: Record<string, string>;
+};
+
+export interface Day {
+  date: Date;
+  isActive: boolean;
+  key: string;
+}
+
+export type CalendarRange = Array<Day>;

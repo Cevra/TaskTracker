@@ -1,22 +1,20 @@
-import { doc, updateDoc, setDoc } from "firebase/firestore";
-import { CreateUserProps, UpdateUserProps } from "types";
-import { User } from "@/models/user";
-import { db } from "firebaseConfig";
+import { doc, updateDoc, setDoc } from 'firebase/firestore';
+import { User } from '@/models/user';
+import { db } from 'firebaseConfig';
 
 class Users {
-    readonly #collectionName = 'users';
+  readonly #collectionName = 'users';
 
-    add(body: CreateUserProps) {
-        const user = User.Create(body);
-        const userRef = doc(db, this.#collectionName, user.id);
-        return setDoc(userRef, user);
-    }
+  add(user: User) {
+    const userRef = doc(db, this.#collectionName, user.id);
+    return setDoc(userRef, user);
+  }
 
-    update(userId: string, body: UpdateUserProps) {
-        const userRef = doc(db,this.#collectionName,  userId);
+  update(user: User) {
+    const userRef = doc(db, this.#collectionName, user.id);
 
-        return updateDoc(userRef, body);
-    }
+    return updateDoc(userRef, { ...user });
+  }
 }
 
 export const UserRepository = new Users();

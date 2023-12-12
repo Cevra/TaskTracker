@@ -1,66 +1,63 @@
-import React from "react";
-import { useState } from "react";
-
-import { View, Text, TouchableOpacity, Image, TextInput } from "react-native";
-import { useRouter } from "expo-router";
-
-import { auth } from "../../firebaseConfig";
-import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-} from "firebase/auth";
-import "firebase/firestore";
-import users from "../repositories/users";
-import BubbleLayout from "../layouts/Bubbles";
-
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, TextInput } from 'react-native';
+import { useRouter } from 'expo-router';
+import BubbleLayout from '@/layouts/Bubbles';
+import { UserRepository } from '@/repositories/users';
+import { Auth } from '@/services/auth';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import WorkerLogo from 'assets/icons/logo.svg';
 
 const CompanySignUp = () => {
-
   const navigation = useRouter();
 
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
   const handleSignUp = async () => {
+    const auth = Auth.instance;
+
     try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
+      const user = await auth.signUp({
+        name,
         email,
-        password
-      );
-      const user = userCredential.user;
-      await users.add(user.uid, {
-        uid: user.uid,
-        name: name,
-        email: email,
+        password,
+        confirmPassword,
       });
-      await signInWithEmailAndPassword(auth, email, password);
-      navigation.push("/screens/Register");
+
+      await UserRepository.add(user);
+
+      auth.signIn(email, password);
+
+      navigation.push('/screens/Register');
     } catch (error) {
-      console.log(error);
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      // Handle error here
+      if (error instanceof Error) {
+        const errorMessage = error?.message;
+        console.log({
+          errorMessage,
+        });
+      }
     }
   };
   return (
     <BubbleLayout>
-      <View className=" inline-flex items-center justify-center ">
+      <View className="inline-flex items-center justify-center">
         <Text
-          style={{ fontFamily: "Square Peg", fontSize: 80 }}
-          className="mt-0 text-black   leading-relaxed"
+          style={{ fontFamily: 'Square Peg', fontSize: 80 }}
+          className="mt-0 text-black leading-relaxed"
         >
           TaskTracker
         </Text>
       </View>
-      <Image
+      <WorkerLogo />
+      {/* <Image
         className="w-40 h-40  rounded-full object-cover"
-        source={require("../../assets/worker_logo.jpg")}
-      />
+        source={require('../../assets/worker_logo.jpg')}
+      /> */}
 
-      <View className="flex  ">
+      <View className="flex">
         <View>
           <TextInput
             className="w-80 h-16 mt-5 bg-secondary text-center text-xl  flex items-center content-center justify-center  rounded-full"

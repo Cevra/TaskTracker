@@ -1,15 +1,20 @@
-
 import React from 'react';
 import { Modal, TouchableWithoutFeedback, View } from 'react-native';
 import { CalendarDetails } from './CalendarDetails';
 
-export default function CalendarDetailsModal({ date, isVisible, setIsVisible }) {
+type CalendarDetailsModalProps = {
+  date: Date;
+  isVisible: boolean;
+  setIsVisible: (isVisible: boolean) => void;
+};
+
+export default function CalendarDetailsModal({
+  date,
+  isVisible,
+  setIsVisible,
+}: CalendarDetailsModalProps) {
   return (
-    <Modal
-      animationType="slide"
-      transparent={true}
-      visible={isVisible}
-    >
+    <Modal animationType="slide" transparent={true} visible={isVisible}>
       <TouchableWithoutFeedback onPress={() => setIsVisible(!isVisible)}>
         <View className="flex-1" />
       </TouchableWithoutFeedback>
