@@ -19,7 +19,7 @@
         "react-hooks",
         "prettier"
     ],
-    "ignorePatterns": ["app.d.ts"],
+    "ignorePatterns": ["app/app.d.ts"],
     "rules": {
         "prettier/prettier": "error"
     },
