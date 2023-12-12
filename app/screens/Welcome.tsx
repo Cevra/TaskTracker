@@ -26,7 +26,7 @@ const Welcome = () => {
       </View>
       <WorkerLogo />
       <View>
-        <Text className="w-80 h-30  mt-10 mb-5 text-center text-black text-align-center  text-2xl  wrap-text font-normal  leading-normal">
+        <Text className="w-80 h-30 mt-10 mb-5 text-center text-black text-align-center text-2xl wrap-text font-normal leading-normal">
           Your go-to tool for effortlessly hiring manual laborers and
           efficiently managing their schedules.
         </Text>
@@ -34,10 +34,8 @@ const Welcome = () => {
         <TouchableOpacity
           onPress={() => navigation.push('/screens/RoleChoice')}
         >
-          <View className="w-80 h-16  mt-5 mb-20 bg-primary text-center flex flex-wrap items-center content-center justify-center ">
-            <Text className=" text-white text-xl  font-normal">
-              GET STARTED
-            </Text>
+          <View className="w-80 h-16 mt-5 mb-20 bg-primary text-center flex flex-wrap items-center content-center justify-center ">
+            <Text className=" text-white text-xl font-normal">GET STARTED</Text>
           </View>
         </TouchableOpacity>
       </View>

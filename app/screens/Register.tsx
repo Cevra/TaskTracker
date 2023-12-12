@@ -43,20 +43,20 @@ const Register = () => {
       <View className="flex  ">
         <View>
           <TextInput
-            className="w-80 h-16 mt-5 bg-input-secondary text-center text-xl  flex items-center content-center justify-center rounded"
+            className="w-80 h-16 mt-5 bg-input-secondary text-center text-xl  flex items-center content-center justify-center rounded-full"
             placeholder="Company name"
             onChangeText={(text) => setCompanyName(text)}
             value={companyName}
           />
 
           <TextInput
-            className="w-80 h-16 mt-8 bg-input-secondary text-center flex items-center text-xl content-center justify-center rounded"
+            className="w-80 h-16 mt-8 bg-input-secondary text-center flex items-center text-xl content-center justify-center rounded-full"
             placeholder="Company ID"
             onChangeText={(text) => setCompanyId(text)}
             value={companyId}
           />
           <TextInput
-            className="w-80 h-16 mt-8 bg-input-secondary text-center flex items-center text-xl content-center justify-center rounded"
+            className="w-80 h-16 mt-8 bg-input-secondary text-center flex items-center text-xl content-center justify-center rounded-full"
             placeholder="Address"
             onChangeText={(text) => setAddress(text)}
             value={address}

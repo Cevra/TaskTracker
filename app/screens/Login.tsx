@@ -37,13 +37,13 @@ const Login = () => {
       <View className="flex mt-5">
         <View className="flex flex-col my-10 gap-10">
           <TextInput
-            className="w-80 h-16 bg-input-secondary text-center text-xl flex items-center content-center justify-center rounded"
+            className="w-80 h-16 bg-input-secondary text-center text-xl flex items-center content-center justify-center rounded-full"
             placeholder="Enter your email"
             onChangeText={(text) => setEmail(text)}
             value={email}
           />
           <TextInput
-            className="w-80 h-16 bg-input-secondary text-center flex items-center text-xl content-center justify-center rounded"
+            className="w-80 h-16 bg-input-secondary text-center flex items-center text-xl content-center justify-center rounded-full"
             placeholder="Enter your password"
             onChangeText={(text) => setPassword(text)}
             value={password}

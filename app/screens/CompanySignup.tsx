@@ -54,27 +54,27 @@ const CompanySignUp = () => {
       <View className="flex">
         <View>
           <TextInput
-            className="w-80 h-14 mt-5 bg-input-secondary text-center text-xl flex items-center content-center justify-center rounded"
+            className="w-80 h-14 mt-5 bg-input-secondary text-center text-xl flex items-center content-center justify-center rounded-full"
             placeholder="Full name"
             onChangeText={(text) => setName(text)}
             value={name}
           />
 
           <TextInput
-            className="w-80 h-14 mt-8 bg-input-secondary text-center flex items-center text-xl content-center justify-center rounded"
+            className="w-80 h-14 mt-8 bg-input-secondary text-center flex items-center text-xl content-center justify-center rounded-full"
             placeholder="Enter your email"
             onChangeText={(text) => setEmail(text)}
             value={email}
           />
           <TextInput
-            className="w-80 h-14 mt-8 bg-input-secondary text-center flex items-center text-xl content-center justify-center rounded"
+            className="w-80 h-14 mt-8 bg-input-secondary text-center flex items-center text-xl content-center justify-center rounded-full"
             placeholder="Enter your password"
             onChangeText={(text) => setPassword(text)}
             value={password}
             secureTextEntry
           />
           <TextInput
-            className="w-80 h-14 mt-10 bg-input-secondary text-center flex items-center text-xl content-center justify-center rounded"
+            className="w-80 h-14 mt-10 bg-input-secondary text-center flex items-center text-xl content-center justify-center rounded-full"
             placeholder="Confirm your password"
             onChangeText={(text) => setConfirmPassword(text)}
             value={confirmPassword}

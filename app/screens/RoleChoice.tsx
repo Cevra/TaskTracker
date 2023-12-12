@@ -31,7 +31,7 @@ const RoleChoice = () => {
             </View>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => navigation.push('/screens/Login')}>
-            <View className="w-80 h-16 bg-input-secondary text-center flex flex-wrap items-center content-center justify-center  rounded-full ">
+            <View className="w-80 h-16 bg-input-secondary text-center flex flex-wrap items-center content-center justify-center rounded-full">
               <Text
                 style={{ fontFamily: 'Poppins' }}
                 className=" text-black text-xl font-normal"
