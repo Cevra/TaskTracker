@@ -40,8 +40,6 @@ export default function Calendar() {
     });
   }, []);
 
-  console.log(targetDate);
-
   const renderItem = useCallback(({ item }: CalendarItemProps) => {
     return (
       <Animated.View>

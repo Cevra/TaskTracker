@@ -11,3 +11,11 @@ export const FONTS = {
   'Square Peg': require('@assets/fonts/SquarePeg-Regular.ttf'),
   Poppins: require('@assets/fonts/Poppins-Regular.ttf'),
 };
+
+export const DEFAULT_LOGO_WIDTH = 200;
+
+export const DEFAULT_LOGO_HEIGHT = 200;
+
+export const FIREBASE_ERROR_MESSAGES: Record<string, string> = {
+  'auth/email-already-in-use': 'Email already in use',
+};

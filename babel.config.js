@@ -7,11 +7,24 @@ module.exports = function (api) {
       'nativewind/babel',
       'expo-router/babel',
       'react-native-reanimated/plugin',
+      'module:react-native-dotenv',
       [
         'module-resolver',
         {
           root: ['.'],
-          extensions: ['.ios.js', '.android.js', '.js', '.ts', '.tsx', '.json', '.ttf', 'svg', 'png', 'jpg', 'jpeg'],
+          extensions: [
+            '.ios.js',
+            '.android.js',
+            '.js',
+            '.ts',
+            '.tsx',
+            '.json',
+            '.ttf',
+            'svg',
+            'png',
+            'jpg',
+            'jpeg',
+          ],
           alias: {
             '@assets': ['./assets/*'],
             '~': ['./*'],

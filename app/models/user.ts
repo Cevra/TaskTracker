@@ -32,11 +32,19 @@ export class User {
 
   public toJson(): Record<string, string | Record<string, string> | undefined> {
     const record: Record<string, string | Record<string, string> | undefined> =
-      {
-        id: this.id,
-        email: this.email,
-        name: this.name,
-      };
+      {};
+
+    if (this.id) {
+      record.id = this.id;
+    }
+
+    if (this.email) {
+      record.email = this.email;
+    }
+
+    if (this.name) {
+      record.name = this.name;
+    }
 
     if (this.company) {
       record.company = this.company.toJson();

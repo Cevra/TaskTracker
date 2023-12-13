@@ -1,18 +1,23 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, TextInput } from 'react-native';
+import { View, TextInput } from 'react-native';
 import { useRouter } from 'expo-router';
 import { UserRepository } from '@/repositories/users';
 import { Auth } from '@/services/auth';
 import TopBubbleLayout from '@/layouts/TopBubble';
-import WorkerLogo from 'assets/icons/logo.svg';
+import Header from '@/components/Header';
+import { ValidationError } from '@/errors/validation-error';
+import Toast from 'react-native-toast-message';
+import SecureButton from '@/components/SecureButton';
+import { FirebaseError } from 'firebase/app';
+import { FIREBASE_ERROR_MESSAGES } from '@/constants';
 
 const CompanySignUp = () => {
   const navigation = useRouter();
 
-  const [name, setName] = useState('MH');
-  const [email, setEmail] = useState('mirsad@metata.io');
-  const [password, setPassword] = useState('sifra1');
-  const [confirmPassword, setConfirmPassword] = useState('sifra1');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
   const handleSignUp = async () => {
     const auth = Auth.instance;
@@ -26,55 +31,56 @@ const CompanySignUp = () => {
       });
 
       await UserRepository.add(user);
-
       auth.signIn(email, password);
-
       navigation.push('/screens/Register');
     } catch (error) {
-      if (error instanceof Error) {
-        const errorMessage = error?.message;
-        console.log({
-          errorMessage,
+      if (error instanceof ValidationError) {
+        Toast.show({
+          type: 'error',
+          text1: error.message,
+        });
+      } else if (error instanceof FirebaseError) {
+        Toast.show({
+          type: 'error',
+          text1: FIREBASE_ERROR_MESSAGES[error.code] ?? '',
+        });
+      } else if (error instanceof Error) {
+        Toast.show({
+          type: 'error',
+          text1: 'Unknown error',
         });
       }
     }
   };
+
   return (
     <TopBubbleLayout>
-      <View className="inline-flex items-center justify-center pt-24">
-        <Text
-          style={{ fontFamily: 'Square Peg' }}
-          className="mt-0 text-black text-8xl leading-relaxed"
-        >
-          TaskTracker
-        </Text>
-      </View>
-      <WorkerLogo width={150} height={150} />
+      <Header />
 
-      <View className="flex">
-        <View>
+      <View className="flex mt-5">
+        <View className="flex flex-col gap-8">
           <TextInput
-            className="w-80 h-14 mt-5 bg-input-secondary text-center text-xl flex items-center content-center justify-center rounded-full"
+            className="w-80 h-14 bg-input-secondary text-center text-xl flex items-center content-center justify-center rounded-full"
             placeholder="Full name"
             onChangeText={(text) => setName(text)}
             value={name}
           />
 
           <TextInput
-            className="w-80 h-14 mt-8 bg-input-secondary text-center flex items-center text-xl content-center justify-center rounded-full"
+            className="w-80 h-14 bg-input-secondary text-center flex items-center text-xl content-center justify-center rounded-full"
             placeholder="Enter your email"
             onChangeText={(text) => setEmail(text)}
             value={email}
           />
           <TextInput
-            className="w-80 h-14 mt-8 bg-input-secondary text-center flex items-center text-xl content-center justify-center rounded-full"
+            className="w-80 h-14 bg-input-secondary text-center flex items-center text-xl content-center justify-center rounded-full"
             placeholder="Enter your password"
             onChangeText={(text) => setPassword(text)}
             value={password}
             secureTextEntry
           />
           <TextInput
-            className="w-80 h-14 mt-10 bg-input-secondary text-center flex items-center text-xl content-center justify-center rounded-full"
+            className="w-80 h-14 bg-input-secondary text-center flex items-center text-xl content-center justify-center rounded-full"
             placeholder="Confirm your password"
             onChangeText={(text) => setConfirmPassword(text)}
             value={confirmPassword}
@@ -82,11 +88,9 @@ const CompanySignUp = () => {
           />
         </View>
 
-        <TouchableOpacity onPress={handleSignUp}>
-          <View className="w-80 h-14 mt-10 mb-10 bg-primary text-center flex flex-wrap items-center content-center justify-center rounded">
-            <Text className=" text-white text-xl font-normal">NEXT STEP</Text>
-          </View>
-        </TouchableOpacity>
+        <View className="mt-10 mb-10">
+          <SecureButton text="NEXT STEP" onPress={handleSignUp} />
+        </View>
       </View>
     </TopBubbleLayout>
   );

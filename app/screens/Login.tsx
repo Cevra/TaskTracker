@@ -4,6 +4,7 @@ import { useRouter } from 'expo-router';
 import { Auth } from '@/services/auth';
 import BubbleLayout from '@/layouts/Bubbles';
 import WorkerLogo from '@assets/icons/logo.svg';
+import SecureButton from '@/components/SecureButton';
 
 const Login = () => {
   const navigation = useRouter();
@@ -12,6 +13,10 @@ const Login = () => {
   const [password, setPassword] = useState('');
 
   const onLoginPress = async () => {
+    if (!email || !password) {
+      return;
+    }
+
     const auth = Auth.instance;
     try {
       await auth.signIn(email, password);
@@ -54,13 +59,11 @@ const Login = () => {
           Forgot password?
         </Text>
 
-        <TouchableOpacity onPress={onLoginPress}>
-          <View className="w-80 h-16 mt-5 bg-primary text-center flex flex-wrap items-center content-center justify-center rounded">
-            <Text className="text-white text-xl font-normal">LOGIN</Text>
-          </View>
-        </TouchableOpacity>
+        <View className="mt-20">
+          <SecureButton text="LOGIN" onPress={onLoginPress} />
+        </View>
 
-        <Text className="w-80 mb-20 text-center text-black text-align-center text-lg wrap-text font-normal leading-normal">
+        <Text className="w-80 mb-10 text-center text-black text-align-center text-lg wrap-text font-normal leading-normal">
           Don’t have an accaount?
           <TouchableOpacity
             onPress={() => navigation.push('/screens/CompanySignup')}

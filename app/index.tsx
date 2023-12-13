@@ -4,6 +4,7 @@ import { useFonts } from 'expo-font';
 import Welcome from '@/screens/Welcome';
 import { FONTS } from '@/constants';
 import * as SplashScreen from 'expo-splash-screen';
+import AddLocation from './screens/AddLocation';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -18,6 +19,7 @@ const HomeScreen = () => {
     return <View></View>;
   }
 
+  return <AddLocation />;
   return <Welcome />;
 };
 

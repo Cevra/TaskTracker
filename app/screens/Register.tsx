@@ -1,13 +1,14 @@
 import React from 'react';
 import { useState } from 'react';
 
-import { View, Text, TouchableOpacity, TextInput } from 'react-native';
+import { View, Text, TextInput } from 'react-native';
 // import { useRouter } from 'expo-router';
 import { Auth } from '@/services/auth';
 import { UserRepository } from '../repositories/users';
 import { Company } from '@/models/company';
 import TopBubbleLayout from '@/layouts/TopBubble';
 import WorkerLogo from 'assets/icons/logo.svg';
+import SecureButton from '@/components/SecureButton';
 
 const Register = () => {
   // const navigation = useRouter();
@@ -63,11 +64,9 @@ const Register = () => {
           />
         </View>
 
-        <TouchableOpacity onPress={onRegisterPress}>
-          <View className="w-80 h-16  mt-10 mb-10 bg-primary text-center flex flex-wrap items-center content-center justify-center rounded">
-            <Text className=" text-white text-xl font-normal">REGISTER</Text>
-          </View>
-        </TouchableOpacity>
+        <View className="mt-10 mb-10">
+          <SecureButton text="REGISTER" onPress={onRegisterPress} />
+        </View>
       </View>
     </TopBubbleLayout>
   );
