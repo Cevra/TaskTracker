@@ -1,40 +1,29 @@
-import {initializeApp} from 'firebase/app';
-//import "firebase/firestore";
-import { getAuth } from "firebase/auth";
-import { addDoc, collection, getFirestore } from 'firebase/firestore';
+import {
+  FIREBASE_API_KEY,
+  FIREBASE_APP_ID,
+  FIREBASE_AUTH_DOMAIN,
+  FIREBASE_MESSAGING_SENDER_ID,
+  FIREBASE_PROJECT_ID,
+  FIREBASE_STORAGE_BUCKET,
+} from '@env';
+import { initializeApp } from 'firebase/app';
+import { initializeAuth, getReactNativePersistence } from 'firebase/auth';
+import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
+import { getFirestore } from 'firebase/firestore';
 
-// import {getDatabase} from "firebase/database"
-
-
-// import 'firebase/firestore';
-
-// import { getFirestore } from "firebase/firestore";
-
-
-// Optionally import the services that you want to use
-// import {...} from "firebase/auth";
-// import {...} from "firebase/database";
-// import {...} from "firebase/firestore";
-// import {...} from "firebase/functions";
-// import {...} from "firebase/storage";
-
-// Initialize Firebase
 const firebaseConfig = {
-    apiKey: "AIzaSyDSrHwTWThoNAZN81d1gn9FmiRPfeWdiHY",
-    authDomain: "task-tracker-afb91.firebaseapp.com",
-  databaseURL: 'https://project-id.firebaseio.com',
-  projectId: "task-tracker-afb91",
-  storageBucket: "task-tracker-afb91.appspot.com",
-  messagingSenderId: "779604134665",
-  appId: "1:779604134665:web:b8ba2a2ab71ea289d061d8",
-  measurementId: 'G-measurement-id',
+  apiKey: FIREBASE_API_KEY,
+  authDomain: FIREBASE_AUTH_DOMAIN,
+  projectId: FIREBASE_PROJECT_ID,
+  storageBucket: FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: FIREBASE_MESSAGING_SENDER_ID,
+  appId: FIREBASE_APP_ID,
 };
 
 export const app = initializeApp(firebaseConfig);
-// For more information on how t o access Firebase in your project,
-// see the Firebase documentation: https://firebase.google.com/docs/web/setup#access-firebase
 
-export const auth = getAuth(app);
+export const auth = initializeAuth(app, {
+  persistence: getReactNativePersistence(ReactNativeAsyncStorage),
+});
+
 export const db = getFirestore(app);
-
-
