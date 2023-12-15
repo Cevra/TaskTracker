@@ -5,7 +5,7 @@ import { LayoutProps } from '../../types';
 
 const Default = ({ children }: LayoutProps) => {
   return (
-    <SafeAreaView className="w-full h-screen bg-layout justify-center items-center">
+    <SafeAreaView className="w-full h-screen bg-layout justify-end items-center">
       {children}
       <BottomNavigation />
     </SafeAreaView>
