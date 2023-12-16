@@ -1,25 +1,64 @@
-import React from 'react';
-import { ScrollView } from 'react-native';
-import Default from '@/layouts/Default';
+import React, { useEffect, useState } from 'react';
+import { ScrollView, Alert, View, ActivityIndicator } from 'react-native';
 import Card, { CardAction } from '../Card';
+import { Location } from '@/models/location';
+import { LocationRepository } from '@/repositories/locations';
+import { Auth } from '@/services/auth';
 
 const Locations = () => {
-  const data = [1, 2, 3, 4, 5, 1, 1, 1, 1, 1, 1, 1];
+  const [locations, setLocations] = useState<Location[]>([]);
+  const onDelete = async (id: string): Promise<void> => {
+    Alert.alert(
+      'Deleting location',
+      'By confirming you will permanently remove the location',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Delete',
+          onPress: async () => {
+            await LocationRepository.remove(id);
+          },
+        },
+      ],
+    );
+  };
+
+  useEffect(() => {
+    const unsubscribe = LocationRepository.listenForUser(
+      Auth.currentUser!.id!,
+      (locations) => setLocations(locations),
+    );
+
+    return () => unsubscribe();
+  }, []);
+
+  if (locations.length === 0) {
+    return (
+      <View className="h-full justify-center items-center flex w-full px-5">
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
 
   return (
-    <Default>
-      <ScrollView className="h-full flex border w-full px-5">
-        {data.map((_, idx) => (
-          <Card
-            actionType={CardAction.DELETE}
-            title="Location"
-            subtitle="Sub title"
-            onAction={() => {}}
-            key={idx}
-          />
-        ))}
-      </ScrollView>
-    </Default>
+    <ScrollView className="h-full flex w-full px-5">
+      {locations.map((location: Location) => (
+        <Card
+          actionType={CardAction.DELETE}
+          title={`${location.city ?? ''} ${location.country ?? ''}`.trim()}
+          subtitle={location.address}
+          onAction={async () => {
+            if (location.id) {
+              return onDelete(location.id);
+            }
+          }}
+          key={location.placeId}
+        />
+      ))}
+    </ScrollView>
   );
 };
 

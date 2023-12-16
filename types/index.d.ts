@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 
 export type LayoutProps = {
   children: ReactNode;
+  classNames?: string;
 };
 
 export interface CreateUserProps {
