@@ -17,6 +17,7 @@ import CalendarItem, { CalendarItemProps } from './CalendarItem';
 import DefaultLayout from '../../layouts/Default';
 import { generateCalendarDaysByDate } from '../../utils/date';
 import CalendarDetailsModal from './CalendarDetailsModal';
+import { DrawerToggleButton } from '@react-navigation/drawer';
 
 const INCREMENT = 1;
 const DECREMENT = -1;
@@ -98,6 +99,8 @@ export default function Calendar() {
       <GestureHandlerRootView style={{ flex: 1 }}>
         <GestureDetector gesture={pan}>
           <Animated.View className="w-full h-max" style={[{}, animatedStyles]}>
+            <DrawerToggleButton />
+
             <Animated.Text className="w-max mt-12 text-right text-2xl font-bold capitalize">
               {format(calendar.date, 'MMMM yyyy')}
             </Animated.Text>
