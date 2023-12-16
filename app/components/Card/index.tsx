@@ -18,14 +18,14 @@ type CardProps = {
   title: string;
   subtitle: string;
   color?: string;
-  onAction: () => void;
+  onAction: () => Promise<void>;
   actionType: CardAction;
 };
 
 const Card = ({ color, title, subtitle, actionType, onAction }: CardProps) => {
   const [isChecked, setIsChecked] = useState(false);
   const onPress = useCallback(
-    (e: GestureResponderEvent) => {
+    async (e: GestureResponderEvent) => {
       e.preventDefault();
 
       switch (actionType) {
@@ -35,7 +35,7 @@ const Card = ({ color, title, subtitle, actionType, onAction }: CardProps) => {
         }
         case CardAction.DELETE:
         case CardAction.VIEW: {
-          onAction();
+          await onAction();
           return;
         }
       }

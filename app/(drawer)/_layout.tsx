@@ -52,7 +52,7 @@ function CustomDrawerContent(props: CustomDrawerProps) {
       </TouchableOpacity>
 
       <TouchableOpacity
-        onPress={() => navigateToScreen('AddaJobLocation')}
+        onPress={() => navigateToScreen('Locations')}
         style={styles.button}
       >
         <Text className="text-white text-xl ">Add a Job Location</Text>
