@@ -9,6 +9,7 @@ module.exports = {
         modal: '#7496B6',
         layout: '#C7DEF4',
         circle: '#B0D9F7',
+        'bottom-nav': '#B0D9F7',
         'shade-blue': '#B6D4EE',
         'input-secondary': '#AFD8F6',
       },

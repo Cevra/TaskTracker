@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { Text, TouchableOpacity, StyleSheet, View } from 'react-native';
 import { Drawer } from 'expo-router/drawer';
 import { DrawerContentScrollView } from '@react-navigation/drawer';
 import WorkerLogo from '@assets/icons/logo.svg';
@@ -26,7 +26,9 @@ function CustomDrawerContent(props: CustomDrawerProps) {
       }}
       style={{ backgroundColor: '#B0D9F7' }}
     >
-      <WorkerLogo />
+      <View className="w-full flex items-center mb-16">
+        <WorkerLogo width={100} height={100} />
+      </View>
 
       <TouchableOpacity
         onPress={() => navigateToScreen('ScheduleAMember')}
