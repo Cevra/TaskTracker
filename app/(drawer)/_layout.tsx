@@ -36,7 +36,7 @@ function CustomDrawerContent(props: CustomDrawerProps) {
       </TouchableOpacity>
 
       <TouchableOpacity
-        onPress={() => navigateToScreen('EditSchedule')}
+        onPress={() => navigateToScreen('Calendar')}
         style={styles.button}
       >
         <Text className="text-white text-xl">Edit a Schedule</Text>
@@ -78,6 +78,7 @@ export default function Layout() {
     <Drawer
       screenOptions={{
         headerStatusBarHeight: 0,
+        headerShown: false,
         drawerStyle: {
           backgroundColor: '#B0D9F7',
           flexDirection: 'column',

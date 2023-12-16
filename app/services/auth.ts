@@ -26,12 +26,21 @@ export class Auth {
     return this._instance;
   }
 
-  static get currentUser(): User {
-    return User.Create({
-      id: auth.currentUser?.uid || '',
-      name: auth.currentUser?.displayName || '',
-      email: auth.currentUser?.email || '',
-    });
+  static get currentUser(): User | null {
+    const instance = Auth.instance;
+    const currentUser = instance.firebaseAuth.currentUser;
+
+    return currentUser
+      ? User.Create({
+          id: currentUser?.uid || '',
+          name: currentUser?.displayName || '',
+          email: currentUser?.email || '',
+        })
+      : null;
+  }
+
+  public start(): Promise<void> {
+    return this.firebaseAuth.authStateReady();
   }
 
   async signUp(payload: SignUpProps): Promise<User> {
@@ -47,6 +56,7 @@ export class Auth {
       id: userCredentials.user.uid,
       name: payload.name,
       email: payload.email,
+      type: payload.type,
     });
 
     return user;
@@ -60,6 +70,7 @@ export class Auth {
     confirmPassword,
     password,
     email,
+    type,
   }: SignUpProps): void | never {
     if (password?.length < 6) {
       throw new ValidationError('Password must be at least 6 characters long');
@@ -71,6 +82,10 @@ export class Auth {
 
     if (!EMAIL_REGEX.test(email)) {
       throw new ValidationError('Invalid email');
+    }
+
+    if (type !== 'company' && type !== 'worker') {
+      throw new ValidationError('Invalid user type');
     }
   }
 }

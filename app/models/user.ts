@@ -9,17 +9,18 @@ export class User {
   worker?: Worker;
 
   private constructor(
-    readonly id: string,
-    readonly email: string,
-    readonly name: string,
+    public readonly id: string,
+    public readonly email: string,
+    public readonly name: string,
+    public readonly type?: 'company' | 'worker',
   ) {}
 
-  public static Create({ id, email, name }: CreateUserProps) {
+  public static Create({ id, email, name, type }: CreateUserProps) {
     if (!EMAIL_REGEX.test(email)) {
       throw new ValidationError('Invalid email');
     }
 
-    return new User(id, email, name);
+    return new User(id, email, name, type);
   }
 
   public addCompanyDetails(payload: Company) {
@@ -44,6 +45,10 @@ export class User {
 
     if (this.name) {
       record.name = this.name;
+    }
+
+    if (this.type) {
+      record.type = this.type;
     }
 
     if (this.company) {

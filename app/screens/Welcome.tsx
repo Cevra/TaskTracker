@@ -4,6 +4,8 @@ import { useRouter } from 'expo-router';
 import BubbleLayout from '@/layouts/Bubbles';
 import Header from '@/components/Header';
 import SecureButton from '@/components/SecureButton';
+import { Storage } from '@/services/storage';
+import { STORAGE_KEYS } from '@/constants';
 
 const Welcome = () => {
   const navigation = useRouter();
@@ -20,7 +22,10 @@ const Welcome = () => {
         <View className="mt-28 mb-10">
           <SecureButton
             text="GET STARTED"
-            onPress={async () => navigation.push('/screens/Login')}
+            onPress={async () => {
+              navigation.push('/screens/Register');
+              await Storage.instance.set(STORAGE_KEYS.WELCOME, 'true');
+            }}
           />
         </View>
       </View>

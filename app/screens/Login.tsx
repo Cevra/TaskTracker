@@ -5,6 +5,9 @@ import { Auth } from '@/services/auth';
 import BubbleLayout from '@/layouts/Bubbles';
 import WorkerLogo from '@assets/icons/logo.svg';
 import SecureButton from '@/components/SecureButton';
+import { FirebaseError } from '@firebase/util';
+import Toast from 'react-native-toast-message';
+import { FIREBASE_ERROR_MESSAGES } from '@/constants';
 
 const Login = () => {
   const navigation = useRouter();
@@ -20,11 +23,18 @@ const Login = () => {
     const auth = Auth.instance;
     try {
       await auth.signIn(email, password);
-      // navigation.push("/(drawer)/ScheduleAMember");
+      navigation.replace('(drawer)/Calendar');
     } catch (error) {
-      if (error instanceof Error) {
-        console.error(error);
+      let text = 'Unable to authenticate';
+
+      if (error instanceof FirebaseError) {
+        text = FIREBASE_ERROR_MESSAGES[error.code];
       }
+
+      Toast.show({
+        type: 'error',
+        text1: text,
+      });
     }
   };
 

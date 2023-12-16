@@ -28,6 +28,7 @@ const CompanySignUp = () => {
         email,
         password,
         confirmPassword,
+        type: 'company',
       });
 
       await UserRepository.add(user);

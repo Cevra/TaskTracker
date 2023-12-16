@@ -18,4 +18,10 @@ export const DEFAULT_LOGO_HEIGHT = 200;
 
 export const FIREBASE_ERROR_MESSAGES: Record<string, string> = {
   'auth/email-already-in-use': 'Email already in use',
+  'auth/invalid-login-credentials': 'Invalid login credentials',
+};
+
+export const STORAGE_KEYS = {
+  WELCOME: 'welcome',
+  ROLE: 'role',
 };

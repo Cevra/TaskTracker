@@ -8,6 +8,7 @@ export interface CreateUserProps {
   id: string;
   email: string;
   name: string;
+  type?: 'worker' | 'company';
 }
 
 export interface SignUpProps {
@@ -15,6 +16,7 @@ export interface SignUpProps {
   name: string;
   password: string;
   confirmPassword: string;
+  type?: 'worker' | 'company';
 }
 
 export type UpdateUserProps = Optional<CreateUserProps> & {

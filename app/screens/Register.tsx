@@ -1,17 +1,17 @@
 import React from 'react';
 import { useState } from 'react';
-
 import { View, Text, TextInput } from 'react-native';
-// import { useRouter } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { Auth } from '@/services/auth';
 import { UserRepository } from '../repositories/users';
 import { Company } from '@/models/company';
 import TopBubbleLayout from '@/layouts/TopBubble';
 import WorkerLogo from 'assets/icons/logo.svg';
 import SecureButton from '@/components/SecureButton';
+import Toast from 'react-native-toast-message';
 
 const Register = () => {
-  // const navigation = useRouter();
+  const navigation = useRouter();
 
   const [companyName, setCompanyName] = useState('');
   const [companyId, setCompanyId] = useState('');
@@ -19,15 +19,19 @@ const Register = () => {
 
   const onRegisterPress = async () => {
     try {
-      const currentUser = Auth.currentUser;
+      const currentUser = Auth.currentUser!;
       currentUser.addCompanyDetails(
         new Company(companyName, companyId, address),
       );
       await UserRepository.update(currentUser);
 
-      console.log('User data updated successfully');
+      navigation.replace('/(drawer)/Calendar');
     } catch (error) {
-      console.log('Error updating user data:', error);
+      Toast.show({
+        type: 'error',
+        text1: 'Unable to register!',
+        text2: 'Make sure all fields are ok and try again',
+      });
     }
   };
   return (
