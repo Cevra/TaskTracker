@@ -99,11 +99,16 @@ export default function Calendar() {
       <GestureHandlerRootView style={{ flex: 1 }}>
         <GestureDetector gesture={pan}>
           <Animated.View className="w-full h-max" style={[{}, animatedStyles]}>
-            <DrawerToggleButton />
+            <Animated.View className="flex flex-row justify-between">
+              <Animated.View className="pt-4">
+                <DrawerToggleButton />
+              </Animated.View>
 
-            <Animated.Text className="w-max mt-12 text-right text-2xl font-bold capitalize">
-              {format(calendar.date, 'MMMM yyyy')}
-            </Animated.Text>
+              <Animated.Text className="w-max mt-12 text-right text-2xl font-bold capitalize">
+                {format(calendar.date, 'MMMM yyyy')}
+              </Animated.Text>
+            </Animated.View>
+
             <Animated.FlatList
               data={calendar.days}
               renderItem={renderItem}
