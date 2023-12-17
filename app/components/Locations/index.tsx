@@ -1,30 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, Alert, View, ActivityIndicator } from 'react-native';
+import { ScrollView, View, ActivityIndicator } from 'react-native';
 import Card, { CardAction } from '../Card';
 import { Location } from '@/models/location';
 import { LocationRepository } from '@/repositories/locations';
 import { Auth } from '@/services/auth';
 
-const Locations = () => {
+interface LocationsProps {
+  actionType: CardAction;
+  onAction: (location: Location) => Promise<void>;
+}
+
+const Locations = ({ actionType, onAction }: LocationsProps) => {
   const [locations, setLocations] = useState<Location[]>([]);
-  const onDelete = async (id: string): Promise<void> => {
-    Alert.alert(
-      'Deleting location',
-      'By confirming you will permanently remove the location',
-      [
-        {
-          text: 'Cancel',
-          style: 'cancel',
-        },
-        {
-          text: 'Delete',
-          onPress: async () => {
-            await LocationRepository.remove(id);
-          },
-        },
-      ],
-    );
-  };
+  const [location, setLocation] = useState<Location | null>(null);
 
   useEffect(() => {
     const unsubscribe = LocationRepository.listenForUser(
@@ -45,17 +33,20 @@ const Locations = () => {
 
   return (
     <ScrollView className="h-full flex w-full px-5">
-      {locations.map((location: Location) => (
+      {locations.map((loc: Location) => (
         <Card
-          actionType={CardAction.DELETE}
-          title={`${location.city ?? ''} ${location.country ?? ''}`.trim()}
-          subtitle={location.address}
-          onAction={async () => {
-            if (location.id) {
-              return onDelete(location.id);
+          actionType={actionType}
+          title={`${loc.city ?? ''} ${loc.country ?? ''}`.trim()}
+          subtitle={loc.address}
+          onAction={() => {
+            if (actionType === CardAction.CHECKBOX) {
+              setLocation(loc);
             }
+
+            return onAction(loc);
           }}
-          key={location.placeId}
+          isChecked={location?.id === loc.id}
+          key={loc.placeId}
         />
       ))}
     </ScrollView>

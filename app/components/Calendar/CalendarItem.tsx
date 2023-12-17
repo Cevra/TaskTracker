@@ -1,35 +1,57 @@
+import { Schedule } from '@/models/schedule';
 import React from 'react';
 import { Text, View } from 'react-native';
 
+export type CalendarDay = {
+  date: Date;
+  isActive: boolean;
+  key: string;
+};
+
 export type CalendarItemProps = {
-  item: {
-    date: Date;
-    isActive: boolean;
-  };
+  item: CalendarDay;
+  schedule?: Schedule;
+  isSelected?: boolean;
+  isAvailable?: boolean;
 };
 
-const Employee = ({ name, color }: { name: string; color: string }) => {
-  return <Text className={`text-[10px] ${color}`}>{name}</Text>;
+const Employee = ({ name, color }: { name: string; color?: string }) => {
+  return (
+    <Text className={`text-[10px] ${color ? color : 'text-black'}`}>
+      {name}
+    </Text>
+  );
 };
 
-export default function CalendarItem({ item }: CalendarItemProps) {
+export default function CalendarItem({
+  item,
+  schedule,
+  isSelected,
+  isAvailable,
+}: CalendarItemProps) {
   const { isActive, date } = item;
 
   return (
-    <View className="mx-1 mt-2">
-      <View className="w-full text-center flex justify-center">
-        <Text
-          className={`w-full text-xs text-center font-bold ${
-            isActive ? 'text-black' : 'text-gray-400'
+    <View className="mx-[1px] mt-2">
+      <View className="w-full text-center flex justify-center items-center">
+        <View
+          className={`w-6 rounded-2xl ${isAvailable ? 'bg-[#D9D9D9]' : ''} ${
+            isSelected ? 'bg-[#fff]' : ''
           }`}
         >
-          {date.getDate()}
-        </Text>
+          <Text
+            className={`w-full text-xs text-center font-bold ${
+              isActive ? 'text-black' : 'text-gray-400'
+            }`}
+          >
+            {date.getDate()}
+          </Text>
+        </View>
       </View>
-      <View className="w-11 h-20 bg-shade-blue rounded-lg p-1">
-        <Employee name="Musab" color="text-red-500" />
-        <Employee name="Mirsad" color="text-blue-500" />
-        <Employee name="Elma" color="text-green-500" />
+      <View className="w-[50px] h-28 bg-shade-blue rounded p-1">
+        {schedule?.workers?.map((worker) => (
+          <Employee key={worker.id} name={worker.name} />
+        ))}
       </View>
     </View>
   );

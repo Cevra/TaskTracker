@@ -1,13 +1,13 @@
 import React from 'react';
 import { SafeAreaView } from 'react-native';
-import BottomNavigation from '../components/BottomNavigation';
-import { LayoutProps } from '../../types';
+import Toast from 'react-native-toast-message';
+import { LayoutProps } from 'types';
 
 const Default = ({ children }: LayoutProps) => {
   return (
     <SafeAreaView className="w-full h-screen bg-layout justify-end items-center">
       {children}
-      <BottomNavigation />
+      <Toast />
     </SafeAreaView>
   );
 };

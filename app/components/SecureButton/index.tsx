@@ -9,10 +9,10 @@ import {
 type SecureButtonProps = {
   onPress: (e: GestureResponderEvent) => Promise<void>;
   text: string;
-  classNames?:string;
+  classNames?: string;
 };
 
-const SecureButton = ({ text, onPress,classNames }: SecureButtonProps) => {
+const SecureButton = ({ text, onPress, classNames }: SecureButtonProps) => {
   const [isSaving, setIsSaving] = React.useState(false);
 
   return (

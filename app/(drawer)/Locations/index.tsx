@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { Text, View } from 'react-native';
+import { Alert, Text, View } from 'react-native';
 import { Drawer } from 'expo-router/drawer';
 import Toast from 'react-native-toast-message';
 import { GOOGLE_MAPS_API_KEY } from '@env';
@@ -13,11 +13,30 @@ import { Address } from 'types';
 import SecureButton from '@/components/SecureButton';
 import { Auth } from '@/services/auth';
 import Locations from '@/components/Locations';
+import { CardAction } from '@/components/Card';
 
 const DEFAULT_ADDRESS: Address = { address: '', placeId: '' };
 
 const AddLocation = () => {
   const [address, setAddress] = useState<Address>(DEFAULT_ADDRESS);
+  const onDelete = async (location: Location): Promise<void> => {
+    Alert.alert(
+      'Deleting location',
+      'By confirming you will permanently remove the location',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Delete',
+          onPress: async () => {
+            await LocationRepository.remove(location!.id!);
+          },
+        },
+      ],
+    );
+  };
 
   const onSave = useCallback(async () => {
     if (!address.placeId) {
@@ -87,7 +106,7 @@ const AddLocation = () => {
       </View>
 
       <View className="w-full h-[480px]">
-        <Locations />
+        <Locations actionType={CardAction.DELETE} onAction={onDelete} />
       </View>
 
       <View className="w-full flex mt-3 justify-center items-center">

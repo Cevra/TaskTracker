@@ -1,17 +1,13 @@
 import React from 'react';
 import { Text, TouchableOpacity, StyleSheet, View } from 'react-native';
 import { Drawer } from 'expo-router/drawer';
-import { DrawerContentScrollView } from '@react-navigation/drawer';
+import {
+  type DrawerContentComponentProps,
+  DrawerContentScrollView,
+} from '@react-navigation/drawer';
 import WorkerLogo from '@assets/icons/logo.svg';
 
-type CustomDrawerProps = {
-  navigation: {
-    navigate: (screen: string) => void;
-    closeDrawer: () => void;
-  };
-};
-
-function CustomDrawerContent(props: CustomDrawerProps) {
+function CustomDrawerContent(props: DrawerContentComponentProps) {
   const navigateToScreen = (screenName: string) => {
     props.navigation.navigate(screenName);
     props.navigation.closeDrawer();
@@ -31,7 +27,7 @@ function CustomDrawerContent(props: CustomDrawerProps) {
       </View>
 
       <TouchableOpacity
-        onPress={() => navigateToScreen('ScheduleAMember')}
+        onPress={() => navigateToScreen('ScheduleMembers')}
         style={styles.button}
       >
         <Text className="text-white text-xl">Schedule a Member</Text>

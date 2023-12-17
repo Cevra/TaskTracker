@@ -4,7 +4,6 @@ import {
   collection,
   query,
   where,
-  getDocs,
   onSnapshot,
   Unsubscribe,
   orderBy,

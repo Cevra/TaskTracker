@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { TouchableOpacity, useWindowDimensions } from 'react-native';
 import {
   GestureHandlerRootView,
@@ -12,22 +12,45 @@ import Animated, {
   runOnJS,
   Easing,
 } from 'react-native-reanimated';
-import { addMonths, format } from 'date-fns';
-import CalendarItem, { CalendarItemProps } from './CalendarItem';
-import DefaultLayout from '../../layouts/Default';
-import { generateCalendarDaysByDate } from '../../utils/date';
-import CalendarDetailsModal from './CalendarDetailsModal';
 import { DrawerToggleButton } from '@react-navigation/drawer';
+import { addMonths, format } from 'date-fns';
+import { generateCalendarDaysByDate } from '@/utils/date';
+import { ScheduleRepository } from '@/repositories/schedules';
+import { Schedule } from '@/models/schedule';
+import { Auth } from '@/services/auth';
+import CalendarDetailsModal from './CalendarDetailsModal';
+import CalendarItem, { CalendarDay, CalendarItemProps } from './CalendarItem';
+import { SelectedDate } from 'types';
 
 const INCREMENT = 1;
 const DECREMENT = -1;
 
-export default function Calendar() {
-  const [calendar, setCalendar] = useState(() => {
-    const today = new Date();
+type CalendarProps = {
+  workerIds?: string[];
+  showAvailableDays?: boolean;
+  hideModal?: boolean;
+  isFocused?: boolean;
+  onItemClick?: (item: CalendarDay) => void;
+  selectedDates?: SelectedDate[];
+};
 
-    return { date: today, days: generateCalendarDaysByDate(today) };
-  });
+const getDefault = () => {
+  const today = new Date();
+
+  const { days, end, start } = generateCalendarDaysByDate(today);
+  return { date: today, days, end, start };
+};
+
+export default function Calendar({
+  workerIds,
+  showAvailableDays,
+  hideModal,
+  onItemClick,
+  selectedDates,
+  isFocused,
+}: CalendarProps) {
+  const [schedules, setSchedules] = useState<Record<string, Schedule>>({});
+  const [calendar, setCalendar] = useState(() => getDefault());
   const [targetDate, setTargetDate] = useState<Date>(new Date());
   const [isVisible, setIsVisible] = useState(false);
   const dimensions = useWindowDimensions();
@@ -37,24 +60,73 @@ export default function Calendar() {
   const handleChange = useCallback((step: number) => {
     setCalendar(({ date: oldDate }) => {
       const newDate = addMonths(oldDate, step);
-      return { date: newDate, days: generateCalendarDaysByDate(newDate) };
+      const { days, end, start } = generateCalendarDaysByDate(newDate);
+      return { date: newDate, days, end, start };
     });
   }, []);
 
-  const renderItem = useCallback(({ item }: CalendarItemProps) => {
-    return (
-      <Animated.View>
-        <TouchableOpacity
-          onPress={() => {
-            setTargetDate(item.date);
-            setIsVisible(true);
-          }}
-        >
-          <CalendarItem item={item} />
-        </TouchableOpacity>
-      </Animated.View>
-    );
-  }, []);
+  useEffect(() => {
+    const getData = async () => {
+      const schedules = await ScheduleRepository.getForRang(
+        Auth.currentUser!.id!,
+        calendar.start,
+        calendar.end,
+      );
+
+      setSchedules(schedules);
+    };
+
+    getData();
+  }, [calendar.end, calendar.start]);
+
+  useEffect(() => {
+    if (isFocused) {
+      setCalendar(() => getDefault());
+    }
+  }, [isFocused]);
+
+  const renderItem = useCallback(
+    ({ item }: CalendarItemProps) => {
+      const schedule = schedules[item.key];
+      const isSelected = selectedDates?.some((d) => d.key === item.key);
+      const isAvailable = showAvailableDays
+        ? !schedule?.workers?.some((w) => workerIds?.includes(w.id))
+        : false;
+
+      return (
+        <Animated.View>
+          <TouchableOpacity
+            onPress={() => {
+              if (onItemClick && isAvailable) {
+                onItemClick(item);
+                return;
+              }
+
+              if (!hideModal) {
+                setTargetDate(item.date);
+                setIsVisible(true);
+              }
+            }}
+          >
+            <CalendarItem
+              isSelected={isSelected}
+              isAvailable={isAvailable}
+              schedule={schedule}
+              item={item}
+            />
+          </TouchableOpacity>
+        </Animated.View>
+      );
+    },
+    [
+      schedules,
+      workerIds,
+      onItemClick,
+      hideModal,
+      selectedDates,
+      showAvailableDays,
+    ],
+  );
 
   const animatedStyles = useAnimatedStyle(() => ({
     transform: [{ translateX: offset.value }],
@@ -90,21 +162,23 @@ export default function Calendar() {
   });
 
   return (
-    <DefaultLayout>
-      <CalendarDetailsModal
-        isVisible={isVisible}
-        setIsVisible={setIsVisible}
-        date={targetDate}
-      />
+    <>
+      {!hideModal && (
+        <CalendarDetailsModal
+          isVisible={isVisible}
+          setIsVisible={setIsVisible}
+          date={targetDate}
+        />
+      )}
       <GestureHandlerRootView style={{ flex: 1 }}>
         <GestureDetector gesture={pan}>
           <Animated.View className="w-full h-max" style={[{}, animatedStyles]}>
-            <Animated.View className="flex flex-row justify-between">
-              <Animated.View className="pt-4">
-                <DrawerToggleButton />
+            <Animated.View className="flex flex-row justify-between items-center mt-4">
+              <Animated.View>
+                <DrawerToggleButton tintColor="#000" />
               </Animated.View>
 
-              <Animated.Text className="w-max mt-12 text-right text-2xl font-bold capitalize">
+              <Animated.Text className="w-max text-right text-2xl font-bold capitalize">
                 {format(calendar.date, 'MMMM yyyy')}
               </Animated.Text>
             </Animated.View>
@@ -119,6 +193,6 @@ export default function Calendar() {
           </Animated.View>
         </GestureDetector>
       </GestureHandlerRootView>
-    </DefaultLayout>
+    </>
   );
 }
