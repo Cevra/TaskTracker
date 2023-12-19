@@ -23,7 +23,7 @@ const Welcome = () => {
           <SecureButton
             text="GET STARTED"
             onPress={async () => {
-              navigation.push('/screens/Register');
+              navigation.push('/screens/Login');
               await Storage.instance.set(STORAGE_KEYS.WELCOME, 'true');
             }}
           />

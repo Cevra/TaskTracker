@@ -56,6 +56,7 @@ export class Auth {
       id: userCredentials.user.uid,
       name: payload.name,
       email: payload.email,
+      phone:payload.phone,
       type: payload.type,
     });
 
