@@ -59,7 +59,7 @@ const HomeScreen = () => {
       const user = Auth.currentUser;
 
       if (user) {
-        navigation.replace('/(drawer)/Calendar');
+        navigation.replace('/screens/Login');
       } else {
         const storage = Storage.instance;
         const welcome = await storage.get(STORAGE_KEYS.WELCOME);
