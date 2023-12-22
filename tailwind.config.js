@@ -15,6 +15,7 @@ module.exports = {
       },
       fontFamily: {
         'square-peg': ['Square Peg', 'sans-serif'],
+        poppins: ['Poppins'],
       },
     },
   },

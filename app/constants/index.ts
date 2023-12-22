@@ -1,3 +1,5 @@
+import { Config } from 'types';
+
 export const MAX_CALENDAR_ROWS = 5;
 
 export const MAX_CALENDAR_ITEMS_PER_ROW = 7;
@@ -24,4 +26,10 @@ export const FIREBASE_ERROR_MESSAGES: Record<string, string> = {
 export const STORAGE_KEYS = {
   WELCOME: 'welcome',
   ROLE: 'role',
+  SCHEDULE_LOCATION: 'scheduleLocation',
+  SCHEDULE_WORKERS: 'scheduleWorkers',
+};
+
+export const FEATURES: Config = {
+  search: false,
 };

@@ -40,7 +40,7 @@ const Login = () => {
 
   return (
     <BubbleLayout>
-      <View className="flex items-center justify-center pt-36">
+      <View className="flex items-center justify-center mt-10">
         <Text
           style={{ fontFamily: 'Square Peg' }}
           className="mt-3 text-8xl text-black leading-relaxed"
@@ -49,7 +49,7 @@ const Login = () => {
         </Text>
         <WorkerLogo width={200} height={200} />
       </View>
-      <View className="flex mt-5">
+      <View className="mt-5">
         <View className="flex flex-col my-10 gap-10">
           <TextInput
             className="w-80 h-16 bg-input-secondary text-center text-xl flex items-center content-center justify-center rounded-full"

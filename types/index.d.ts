@@ -31,9 +31,14 @@ export interface Day {
   date: Date;
   isActive: boolean;
   key: string;
+  propKey: string;
 }
 
-export type CalendarRange = Array<Day>;
+export type CalendarRange = {
+  days: Array<Day>;
+  start: Date;
+  end: Date;
+};
 
 export interface AddressComponent {
   long_name: string;
@@ -67,4 +72,40 @@ export interface Address {
   zip?: string;
   latitude?: number;
   longitude?: number;
+}
+
+export interface Config {
+  search: boolean;
+}
+
+export interface ScheduleLocation {
+  id: string;
+  city: string;
+  country: string;
+  address: string;
+}
+
+export interface ScheduleMember {
+  id: string;
+  name: string;
+  time: string;
+  location?: ScheduleLocation;
+}
+
+export interface DailySchedule {
+  createdById: string;
+  company: string;
+  scheduledAt: Date;
+  location: ScheduleLocation;
+  workers: ScheduleMember[];
+}
+
+export interface ChooseDatesState {
+  location: ScheduleLocation;
+  workers: ScheduleMember[];
+}
+
+export interface SelectedDate {
+  date: Date;
+  key: string;
 }

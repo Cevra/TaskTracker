@@ -4,12 +4,12 @@ import {
   collection,
   query,
   where,
-  getDocs,
   onSnapshot,
   Unsubscribe,
   orderBy,
   doc,
   deleteDoc,
+  getDocs,
 } from 'firebase/firestore';
 
 import { db } from 'firebaseConfig';
@@ -19,6 +19,19 @@ class Locations {
 
   add(location: Location) {
     return addDoc(collection(db, this.#collectionName), location.toJson());
+  }
+
+  async getAll(): Promise<Location[]> {
+    const q = query(collection(db, this.#collectionName));
+    const locations: Location[] = [];
+
+    const querySnapshot = await getDocs(q);
+
+    querySnapshot.forEach((doc) => {
+      locations.push({ id: doc.id, ...doc.data() } as Location);
+    });
+
+    return locations;
   }
 
   remove(id: string): Promise<void> {
