@@ -9,6 +9,7 @@ export interface CreateUserProps {
   id: string;
   email: string;
   name: string;
+  phone?:string;
   type?: 'worker' | 'company';
 }
 
@@ -17,6 +18,7 @@ export interface SignUpProps {
   name: string;
   password: string;
   confirmPassword: string;
+  phone?:string;
   type?: 'worker' | 'company';
 }
 

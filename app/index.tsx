@@ -8,6 +8,7 @@ import { Storage } from '@/services/storage';
 import { Auth } from '@/services/auth';
 import Welcome from '@/screens/Welcome';
 import Login from '@/screens/Login';
+import AddAMember from './screens/AddMember';
 import Default from './layouts/Default';
 
 SplashScreen.preventAutoHideAsync();
@@ -30,7 +31,7 @@ const HomeScreen = () => {
     () => ({
       loading: Loading,
       welcome: Welcome,
-      login: Login,
+      login: AddAMember,
     }),
     [],
   );
@@ -58,7 +59,7 @@ const HomeScreen = () => {
       const user = Auth.currentUser;
 
       if (user) {
-        navigation.replace('/(drawer)/Calendar');
+        navigation.replace('/screens/Login');
       } else {
         const storage = Storage.instance;
         const welcome = await storage.get(STORAGE_KEYS.WELCOME);

@@ -5,7 +5,7 @@ import { UserRepository } from '@/repositories/users';
 import TopBubbleLayout from '@/layouts/TopBubble';
 import Header from '@/components/Header';
 import { Auth } from '@/services/auth';
-import { Drawer } from 'expo-router/drawer';
+
 import { ValidationError } from '@/errors/validation-error';
 import Toast from 'react-native-toast-message';
 import SecureButton from '@/components/SecureButton';
@@ -15,7 +15,7 @@ import { generatePassword } from '@/utils/password';
 import { Worker } from '@/models/worker';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-const AddANewMember = () => {
+const AddAMember = () => {
   const navigation = useRouter();
 
   const [firstName, setFirstName] = useState('');
@@ -64,8 +64,6 @@ const AddANewMember = () => {
 
   return (
     <TopBubbleLayout>
-      <Drawer.Screen options={{ title: 'AddNewMember', headerShown: false }} />
-
       <SafeAreaView className=" mt-24 ">
         <Header hideTitle={true} logo={{ width: 150, height: 150 }} />
 
@@ -101,11 +99,7 @@ const AddANewMember = () => {
           </View>
 
           <View className="mt-12 mb-10 flex items-center w-full ">
-            <SecureButton
-              text="SEND INVITATION"
-              onPress={addNewMember}
-              classNames="h-16 w-60 flex justify-center"
-            />
+            <SecureButton text="SEND INVITATION" onPress={addNewMember} classNames='h-16 w-60 flex justify-center' />
           </View>
         </View>
       </SafeAreaView>
@@ -113,4 +107,4 @@ const AddANewMember = () => {
   );
 };
 
-export default AddANewMember;
+export default AddAMember;
