@@ -42,7 +42,10 @@ export default function ChooseMembers() {
             actionType={CardAction.CHECKBOX}
             onAction={async (user: User) => {
               if (user?.id) {
-                setWorkers([...workers, { id: user.id, name: user.name }]);
+                setWorkers([
+                  ...workers,
+                  { id: user.id, name: user.name, time: 'N/A' },
+                ]);
               }
             }}
           ></Workers>

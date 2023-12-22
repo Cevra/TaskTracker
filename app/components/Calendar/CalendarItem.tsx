@@ -10,7 +10,7 @@ export type CalendarDay = {
 
 export type CalendarItemProps = {
   item: CalendarDay;
-  schedule?: Schedule;
+  schedule?: Partial<Schedule>;
   isSelected?: boolean;
   isAvailable?: boolean;
 };

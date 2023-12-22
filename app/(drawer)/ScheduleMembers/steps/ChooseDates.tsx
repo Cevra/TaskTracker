@@ -18,6 +18,7 @@ import SecureButton from '@/components/SecureButton';
 import { Schedule } from '@/models/schedule';
 import { Auth } from '@/services/auth';
 import { ScheduleRepository } from '@/repositories/schedules';
+import { UserRepository } from '@/repositories/users';
 
 export default function ChooseDates() {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -64,10 +65,13 @@ export default function ChooseDates() {
   const onPress = useCallback(
     async (e: GestureResponderEvent) => {
       e.preventDefault();
+      const userId = Auth.currentUser!.id!;
+      const user = await UserRepository.getById(userId);
       const schedules = selectedDates.map(
         ({ date: scheduledAt }) =>
           new Schedule(
-            Auth.currentUser!.id!,
+            user!.id,
+            user!.company!.name,
             scheduledAt,
             payload!.location,
             payload!.workers,

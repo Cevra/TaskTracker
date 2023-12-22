@@ -11,6 +11,7 @@ import { Storage } from '@/services/storage';
 import ChevronRight from '@assets/icons/chevron-right.svg';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Location } from '@/models/location';
+import { ScheduleLocation } from 'types';
 
 export default function ChooseLocation() {
   const [searchPhrase, setSearchPhrase] = useState('');
@@ -52,8 +53,10 @@ export default function ChooseLocation() {
                   STORAGE_KEYS.SCHEDULE_LOCATION,
                   JSON.stringify({
                     id: location.id,
+                    city: location.city,
+                    country: location.country,
                     address: location.address,
-                  }),
+                  } as ScheduleLocation),
                 );
 
                 navigation.push(

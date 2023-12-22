@@ -20,7 +20,7 @@ import { Schedule } from '@/models/schedule';
 import { Auth } from '@/services/auth';
 import CalendarDetailsModal from './CalendarDetailsModal';
 import CalendarItem, { CalendarDay, CalendarItemProps } from './CalendarItem';
-import { SelectedDate } from 'types';
+import { ScheduleMember, SelectedDate } from 'types';
 
 const INCREMENT = 1;
 const DECREMENT = -1;
@@ -49,9 +49,14 @@ export default function Calendar({
   selectedDates,
   isFocused,
 }: CalendarProps) {
-  const [schedules, setSchedules] = useState<Record<string, Schedule>>({});
+  const [schedules, setSchedules] = useState<Record<string, Partial<Schedule>>>(
+    {},
+  );
   const [calendar, setCalendar] = useState(() => getDefault());
-  const [targetDate, setTargetDate] = useState<Date>(new Date());
+  const [selected, setSelected] = useState<{ key: string; date: Date }>({
+    key: format(new Date(), 'yyyy-MM-dd'),
+    date: new Date(),
+  });
   const [isVisible, setIsVisible] = useState(false);
   const dimensions = useWindowDimensions();
   const offset = useSharedValue(0);
@@ -67,7 +72,7 @@ export default function Calendar({
 
   useEffect(() => {
     const getData = async () => {
-      const schedules = await ScheduleRepository.getForRang(
+      const schedules = await ScheduleRepository.getForRange(
         Auth.currentUser!.id!,
         calendar.start,
         calendar.end,
@@ -103,7 +108,10 @@ export default function Calendar({
               }
 
               if (!hideModal) {
-                setTargetDate(item.date);
+                setSelected({
+                  key: item.key,
+                  date: item.date,
+                });
                 setIsVisible(true);
               }
             }}
@@ -126,6 +134,23 @@ export default function Calendar({
       selectedDates,
       showAvailableDays,
     ],
+  );
+
+  const onUpdate = useCallback(
+    async (workers: ScheduleMember[]) => {
+      const schedule = schedules[selected.key];
+
+      if (schedule?.id) {
+        await ScheduleRepository.update(schedule.id, {
+          workers,
+        });
+
+        setSchedules((old) => {
+          return { ...old, [selected.key]: { ...schedule, workers } };
+        });
+      }
+    },
+    [schedules, selected.key],
   );
 
   const animatedStyles = useAnimatedStyle(() => ({
@@ -165,9 +190,11 @@ export default function Calendar({
     <>
       {!hideModal && (
         <CalendarDetailsModal
+          onUpdate={onUpdate}
           isVisible={isVisible}
           setIsVisible={setIsVisible}
-          date={targetDate}
+          schedule={schedules[selected.key]}
+          date={selected.date}
         />
       )}
       <GestureHandlerRootView style={{ flex: 1 }}>

@@ -80,12 +80,24 @@ export interface Config {
 
 export interface ScheduleLocation {
   id: string;
+  city: string;
+  country: string;
   address: string;
 }
 
 export interface ScheduleMember {
   id: string;
   name: string;
+  time: string;
+  location?: ScheduleLocation;
+}
+
+export interface DailySchedule {
+  createdById: string;
+  company: string;
+  scheduledAt: Date;
+  location: ScheduleLocation;
+  workers: ScheduleMember[];
 }
 
 export interface ChooseDatesState {
