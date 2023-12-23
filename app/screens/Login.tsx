@@ -65,16 +65,20 @@ const Login = () => {
             secureTextEntry
           />
         </View>
-        <Text className="w-80 h-8 text-center text-black text-align-center text-xl wrap-text font-normal leading-normal">
-          Forgot password?
-        </Text>
+        <TouchableOpacity
+          onPress={() => navigation.push('/screens/ResetPassword')}
+        >
+          <Text className="w-80 h-8 text-center text-black text-align-center text-xl wrap-text font-normal leading-normal">
+            Forgot password?
+          </Text>
+        </TouchableOpacity>
 
         <View className="mt-20">
           <SecureButton text="LOGIN" onPress={onLoginPress} />
         </View>
 
         <Text className="w-80 mb-10 text-center text-black text-align-center text-lg wrap-text font-normal leading-normal">
-          Don’t have an accaount?
+          Don’t have an account?
           <TouchableOpacity
             onPress={() => navigation.push('/screens/CompanySignup')}
           >

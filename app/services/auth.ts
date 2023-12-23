@@ -1,9 +1,10 @@
 import type { Auth as FirebaseAuth, UserCredential } from 'firebase/auth';
 import {
   createUserWithEmailAndPassword,
+  sendPasswordResetEmail,
   signInWithEmailAndPassword,
 } from 'firebase/auth';
-import { getDatabase, ref, child, get } from "firebase/database";
+import { getDatabase, ref, get } from 'firebase/database';
 import { auth } from 'firebaseConfig';
 import { SignUpProps } from 'types';
 import { EMAIL_REGEX } from '@/constants';
@@ -39,6 +40,7 @@ export class Auth {
         })
       : null;
   }
+
   async getUserNames(): Promise<string[]> {
     try {
       const db = getDatabase();
@@ -77,17 +79,19 @@ export class Auth {
       id: userCredentials.user.uid,
       name: payload.name,
       email: payload.email,
-      phone:payload.phone,
+      phone: payload.phone,
       type: payload.type,
     });
 
     return user;
   }
 
-
-  
   signIn(email: string, password: string) {
     return signInWithEmailAndPassword(this.firebaseAuth, email, password);
+  }
+
+  sendResetPasswordEmail(email: string) {
+    return sendPasswordResetEmail(this.firebaseAuth, email);
   }
 
   private validate({

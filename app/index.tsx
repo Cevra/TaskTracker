@@ -7,9 +7,8 @@ import { FONTS, STORAGE_KEYS } from '@/constants';
 import { Storage } from '@/services/storage';
 import { Auth } from '@/services/auth';
 import Welcome from '@/screens/Welcome';
-import Login from '@/screens/Login';
-import AddAMember from './screens/AddMember';
 import Default from './layouts/Default';
+import Login from './screens/Login';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -31,7 +30,7 @@ const HomeScreen = () => {
     () => ({
       loading: Loading,
       welcome: Welcome,
-      login: AddAMember,
+      login: Login,
     }),
     [],
   );
