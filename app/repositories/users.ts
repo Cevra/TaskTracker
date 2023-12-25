@@ -34,6 +34,12 @@ class Users {
     return updateDoc(userRef, user.toJson());
   }
 
+  updateOne(userId: string, user: Partial<User>) {
+    const userRef = doc(db, this.#collectionName, userId);
+
+    return updateDoc(userRef, { ...user });
+  }
+
   async getEmployedFor(userId: string): Promise<User[]> {
     const q = query(
       collection(db, this.#collectionName),

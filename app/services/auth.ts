@@ -3,6 +3,7 @@ import {
   createUserWithEmailAndPassword,
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
+  updatePassword,
 } from 'firebase/auth';
 import { getDatabase, ref, get } from 'firebase/database';
 import { auth } from 'firebaseConfig';
@@ -10,6 +11,8 @@ import { SignUpProps } from 'types';
 import { EMAIL_REGEX } from '@/constants';
 import { ValidationError } from '@/errors/validation-error';
 import { User } from '@/models/user';
+import { UserRepository } from '@/repositories/users';
+import { Storage } from './storage';
 
 export class Auth {
   private static _instance: Auth;
@@ -39,6 +42,13 @@ export class Auth {
           email: currentUser?.email || '',
         })
       : null;
+  }
+
+  public async user(): Promise<User | null> {
+    const currentUser = Auth.instance.firebaseAuth.currentUser;
+    const user = await Storage.instance.get(`details:${currentUser?.uid}`);
+
+    return user ? (JSON.parse(user) as User) : null;
   }
 
   async getUserNames(): Promise<string[]> {
@@ -86,12 +96,33 @@ export class Auth {
     return user;
   }
 
-  signIn(email: string, password: string) {
-    return signInWithEmailAndPassword(this.firebaseAuth, email, password);
+  public signOut(): Promise<void> {
+    return this.firebaseAuth.signOut();
+  }
+
+  async signIn(email: string, password: string) {
+    const creds = await signInWithEmailAndPassword(
+      this.firebaseAuth,
+      email,
+      password,
+    );
+
+    const firebaseUser = await UserRepository.getById(creds.user.uid);
+
+    await Storage.instance.set(
+      `details:${creds.user.uid}`,
+      JSON.stringify(firebaseUser),
+    );
+
+    return creds;
   }
 
   sendResetPasswordEmail(email: string) {
     return sendPasswordResetEmail(this.firebaseAuth, email);
+  }
+
+  updatePassword(password: string) {
+    return updatePassword(this.firebaseAuth.currentUser!, password);
   }
 
   private validate({

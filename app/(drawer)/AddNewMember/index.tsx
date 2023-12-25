@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput } from 'react-native';
-import { useRouter } from 'expo-router';
 import { UserRepository } from '@/repositories/users';
 import TopBubbleLayout from '@/layouts/TopBubble';
 import Header from '@/components/Header';
@@ -14,10 +13,9 @@ import { FIREBASE_ERROR_MESSAGES } from '@/constants';
 import { generatePassword } from '@/utils/password';
 import { Worker } from '@/models/worker';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { sendEmail } from '@/utils/mail';
 
 const AddANewMember = () => {
-  const navigation = useRouter();
-
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [phone, setPhoneNumber] = useState('');
@@ -26,11 +24,11 @@ const AddANewMember = () => {
   const addNewMember = async () => {
     const password = generatePassword(6);
     const confirmPassword = password;
-
+    const name = `${firstName} ${lastName}`;
     const auth = Auth.instance;
     try {
       const user = await auth.signUp({
-        name: `${firstName} ${lastName}`,
+        name,
         password,
         confirmPassword,
         phone,
@@ -40,8 +38,17 @@ const AddANewMember = () => {
       user.addWorkerDetails(new Worker(Auth.currentUser!.id));
 
       await UserRepository.add(user);
+      await sendEmail({
+        from: 'no-reply-tasktracker@meta5.io',
+        to: email,
+        subject: `Welcome ${name} to TaskTracker!`,
+        text: `You have been invited to join TaskTracker. Your password is: ${password}. Download the app from your app store and start clocking your hours!`,
+      });
 
-      navigation.push('/(drawer)/Calendar');
+      Toast.show({
+        type: 'success',
+        text1: 'New member invited!',
+      });
     } catch (error) {
       if (error instanceof ValidationError) {
         Toast.show({
@@ -51,7 +58,8 @@ const AddANewMember = () => {
       } else if (error instanceof FirebaseError) {
         Toast.show({
           type: 'error',
-          text1: FIREBASE_ERROR_MESSAGES[error.code] ?? '',
+          text1:
+            FIREBASE_ERROR_MESSAGES[error.code] ?? 'Unable to invite member',
         });
       } else if (error instanceof Error) {
         Toast.show({

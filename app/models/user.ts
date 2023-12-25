@@ -12,15 +12,16 @@ export class User {
     public readonly id: string,
     public readonly email: string,
     public readonly name: string,
+    public readonly phone?: string,
     public readonly type?: 'company' | 'worker',
   ) {}
 
-  public static Create({ id, email, name, type }: CreateUserProps) {
+  public static Create({ id, email, name, phone, type }: CreateUserProps) {
     if (!EMAIL_REGEX.test(email)) {
       throw new ValidationError('Invalid email');
     }
 
-    return new User(id, email, name, type);
+    return new User(id, email, name, phone, type);
   }
 
   public addCompanyDetails(payload: Company) {
@@ -31,9 +32,14 @@ export class User {
     this.worker = payload;
   }
 
-  public toJson(): Record<string, string | Record<string, string> | undefined> {
-    const record: Record<string, string | Record<string, string> | undefined> =
-      {};
+  public toJson(): Record<
+    string,
+    string | Record<string, string> | Partial<Worker> | undefined
+  > {
+    const record: Record<
+      string,
+      string | Record<string, string> | Partial<Worker> | undefined
+    > = {};
 
     if (this.id) {
       record.id = this.id;

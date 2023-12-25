@@ -7,7 +7,7 @@ const TopBubbleLayout = ({ children, classNames }: LayoutProps) => {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      className={`w-full h-full bg-layout justify-start items-center ${
+      className={`w-full h-full bg-layout justify-end items-center ${
         classNames ?? ''
       }`}
     >

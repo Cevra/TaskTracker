@@ -33,3 +33,15 @@ export const STORAGE_KEYS = {
 export const FEATURES: Config = {
   search: false,
 };
+
+export const WORKER_EXPERIENCES: Record<string, string> = {
+  excavation: 'Excavation',
+  utility: 'Utility Work',
+  landscaping: 'Landscaping',
+  foundation: 'Foundation',
+  siding: 'Siding',
+  'window-installing': 'Window Installing',
+  framing: 'Framing',
+  flooring: 'Flooring',
+  drywall: 'Drywall',
+};

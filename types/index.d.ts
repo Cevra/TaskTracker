@@ -9,7 +9,7 @@ export interface CreateUserProps {
   id: string;
   email: string;
   name: string;
-  phone?:string;
+  phone?: string;
   type?: 'worker' | 'company';
 }
 
@@ -18,7 +18,7 @@ export interface SignUpProps {
   name: string;
   password: string;
   confirmPassword: string;
-  phone?:string;
+  phone?: string;
   type?: 'worker' | 'company';
 }
 
@@ -109,3 +109,21 @@ export interface SelectedDate {
   date: Date;
   key: string;
 }
+
+type BaseMailOptions = {
+  to: string;
+  from: string;
+  subject?: string;
+};
+
+export type PlainTextMailOptions = BaseMailOptions & {
+  text: string;
+  html?: string;
+};
+
+export type HtmlMailOptions = BaseMailOptions & {
+  text?: string;
+  html: string;
+};
+
+export type MailerOptions = PlainTextMailOptions | HtmlMailOptions;
