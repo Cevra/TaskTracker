@@ -21,6 +21,7 @@ import { Auth } from '@/services/auth';
 import CalendarDetailsModal from './CalendarDetailsModal';
 import CalendarItem, { CalendarDay, CalendarItemProps } from './CalendarItem';
 import { ScheduleMember, SelectedDate } from 'types';
+import { User } from '@/models/user';
 
 const INCREMENT = 1;
 const DECREMENT = -1;
@@ -52,6 +53,7 @@ export default function Calendar({
   const [schedules, setSchedules] = useState<Record<string, Partial<Schedule>>>(
     {},
   );
+  const [user, setUser] = useState(Auth.currentUser);
   const [calendar, setCalendar] = useState(() => getDefault());
   const [selected, setSelected] = useState<{ key: string; date: Date }>({
     key: format(new Date(), 'yyyy-MM-dd'),
@@ -72,8 +74,11 @@ export default function Calendar({
 
   useEffect(() => {
     const getData = async () => {
+      const authUser = (await Auth.instance.user()) as User;
+      setUser(authUser);
       const schedules = await ScheduleRepository.getForRange(
-        Auth.currentUser!.id!,
+        authUser.id,
+        authUser.type!,
         calendar.start,
         calendar.end,
       );
@@ -121,6 +126,7 @@ export default function Calendar({
               isAvailable={isAvailable}
               schedule={schedule}
               item={item}
+              isForWorker={user?.type === 'worker'}
             />
           </TouchableOpacity>
         </Animated.View>
@@ -133,6 +139,7 @@ export default function Calendar({
       hideModal,
       selectedDates,
       showAvailableDays,
+      user?.type,
     ],
   );
 
@@ -195,6 +202,7 @@ export default function Calendar({
           setIsVisible={setIsVisible}
           schedule={schedules[selected.key]}
           date={selected.date}
+          user={user}
         />
       )}
       <GestureHandlerRootView style={{ flex: 1 }}>

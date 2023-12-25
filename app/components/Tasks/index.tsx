@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import TaskRow from '../TasksRow';
 import { ActivityIndicator, View, Text } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import { TaskRepositories } from '@/repositories/tasks';
+import { TaskRepository } from '@/repositories/tasks';
 import { endOfMonth, startOfMonth } from 'date-fns';
 import { Task } from '@/models/task';
 import { User } from '@/models/user';
@@ -21,7 +21,7 @@ const Tasks = ({ color, user }: TasksProps) => {
 
   useEffect(() => {
     const getData = async () => {
-      const firebaseTasks = await TaskRepositories.getForRange(
+      const firebaseTasks = await TaskRepository.getForRange(
         user.id,
         startOfMonth(new Date()),
         endOfMonth(new Date()),
@@ -46,7 +46,7 @@ const Tasks = ({ color, user }: TasksProps) => {
   }
 
   return (
-    <View className="w-full  px-5  ">
+    <View className="w-full px-5">
       <View className="w-full h-1/5 pt-5 mb-7  bg-white rounded-3xl flex justify-between items-center ">
         <Text className={`text-3xl ml-6 font-bold mt-4 text-[${color}]`}>
           {user.name}

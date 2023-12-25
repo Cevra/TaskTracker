@@ -4,9 +4,12 @@ import { CalendarDetails } from './CalendarDetails';
 import { CalendarDetailsEdit } from './CalendarDetailsEdit';
 import { Schedule } from '@/models/schedule';
 import { ScheduleMember } from 'types';
+import { User } from '@/models/user';
+import { CalendarDetailsWorker } from './CalendarDetailsWorker';
 
 type CalendarDetailsModalProps = {
   date: Date;
+  user: User | null;
   isVisible: boolean;
   setIsVisible: (isVisible: boolean) => void;
   schedule?: Partial<Schedule>;
@@ -16,8 +19,9 @@ type CalendarDetailsModalProps = {
 export default function CalendarDetailsModal({
   date,
   isVisible,
-  setIsVisible,
   schedule,
+  user,
+  setIsVisible,
   onUpdate,
 }: CalendarDetailsModalProps) {
   const [isEdit, setIsEdit] = useState(false);
@@ -28,8 +32,14 @@ export default function CalendarDetailsModal({
         <View className="flex-1" />
       </TouchableWithoutFeedback>
 
-      <View className="w-full px-4 absolute top-1/4">
-        {isEdit ? (
+      <View
+        className={`w-full px-2 absolute ${
+          user?.type === 'worker' ? 'top-24' : 'top-1/4'
+        }`}
+      >
+        {user?.type === 'worker' ? (
+          <CalendarDetailsWorker user={user} date={date} schedule={schedule} />
+        ) : isEdit ? (
           <CalendarDetailsEdit
             onUpdate={onUpdate}
             setIsEdit={setIsEdit}

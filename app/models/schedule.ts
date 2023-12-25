@@ -9,11 +9,12 @@ export class Schedule {
     public readonly scheduledAt: Date,
     public readonly location: ScheduleLocation,
     public readonly workers: ScheduleMember[],
+    public readonly workerIds: string[],
   ) {}
 
   public toJson(): Record<
     string,
-    string | ScheduleLocation | Date | ScheduleMember[] | undefined
+    string | string[] | ScheduleLocation | Date | ScheduleMember[] | undefined
   > {
     return {
       createdById: this.createdById,
@@ -30,6 +31,7 @@ export class Schedule {
         name: w.name,
         time: w.time,
       })),
+      workerIds: this.workerIds,
     };
   }
 }

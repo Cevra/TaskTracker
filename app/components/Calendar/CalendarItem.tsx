@@ -13,6 +13,7 @@ export type CalendarItemProps = {
   schedule?: Partial<Schedule>;
   isSelected?: boolean;
   isAvailable?: boolean;
+  isForWorker?: boolean;
 };
 
 const Employee = ({ name, color }: { name: string; color?: string }) => {
@@ -28,6 +29,7 @@ export default function CalendarItem({
   schedule,
   isSelected,
   isAvailable,
+  isForWorker,
 }: CalendarItemProps) {
   const { isActive, date } = item;
 
@@ -49,9 +51,13 @@ export default function CalendarItem({
         </View>
       </View>
       <View className="w-[50px] h-28 bg-shade-blue rounded p-1">
-        {schedule?.workers?.map((worker) => (
-          <Employee key={worker.id} name={worker.name} />
-        ))}
+        {isForWorker ? (
+          <Employee key={schedule?.id} name={schedule?.company ?? ''} />
+        ) : (
+          schedule?.workers?.map((worker) => (
+            <Employee key={worker.id} name={worker.name} />
+          ))
+        )}
       </View>
     </View>
   );

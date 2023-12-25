@@ -10,6 +10,7 @@ import EditUser from '@/components/EditUser';
 import Header from '@/components/Header';
 import Default from '@/layouts/Default';
 import { UserRepository } from '@/repositories/users';
+import { FirebaseError } from 'firebase/app';
 
 const EditMember = () => {
   const navigation = useRouter();
@@ -50,12 +51,18 @@ const EditMember = () => {
     async (worker: Partial<Worker>, user: User, password: string) => {
       try {
         await Auth.instance.updatePassword(password);
-        await Auth.instance.signIn(user.email, password);
         user.worker = { ...worker, isSetup: true } as Worker;
         await UserRepository.updateOne(user.id, user);
+        await Auth.instance.signIn(user.email, password);
         navigation.replace('/screens/UserUpdated');
       } catch (e) {
-        console.error(e);
+        if (e instanceof FirebaseError) {
+          if (e.code === 'auth/requires-recent-login') {
+            navigation.replace('/screens/Login');
+            return;
+          }
+        }
+
         Toast.show({
           type: 'error',
           text1: 'Unable to update user',

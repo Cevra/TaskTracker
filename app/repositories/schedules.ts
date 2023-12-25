@@ -58,6 +58,7 @@ class Schedules {
 
   async getForRange(
     userId: string,
+    type: 'worker' | 'company',
     start: Date,
     end: Date,
   ): Promise<Record<string, Schedule>> {
@@ -66,7 +67,9 @@ class Schedules {
 
     const q = query(
       collection(db, this.#collectionName),
-      where('createdById', '==', userId),
+      type === 'company'
+        ? where('createdById', '==', userId)
+        : where('workerIds', 'array-contains', userId),
       where('scheduledAt', '>=', startTimestamp),
       where('scheduledAt', '<=', endTimestamp),
     );
