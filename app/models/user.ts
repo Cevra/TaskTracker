@@ -7,6 +7,7 @@ import { Company } from './company';
 export class User {
   company?: Company;
   worker?: Worker;
+  address?: string;
 
   private constructor(
     public readonly id: string,
