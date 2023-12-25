@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, ActivityIndicator } from 'react-native';
-import { useNavigation } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { CardAction } from '@/components/Card';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Workers from '@/components/Workers';
@@ -8,9 +8,11 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { Auth } from '@/services/auth';
 import UnsafeBubbleLayout from '@/layouts/UnsafeBubbles';
 import BottomNavigation from '@/components/BottomNavigation';
+import { Drawer } from 'expo-router/drawer';
+import { Storage } from '@/services/storage';
 
 const EmployeeList = () => {
-  const navigation = useNavigation();
+  const navigation = useRouter();
 
   const [dataLoaded, setDataLoaded] = useState(false);
 
@@ -25,8 +27,9 @@ const EmployeeList = () => {
 
   return (
     <UnsafeBubbleLayout>
+
       <SafeAreaView className="w-full h-full  justify-between">
-        {/* <Header hideTitle={true} logo={{ width: 150, height: 150 }} /> */}
+      <Drawer.Screen options={{ title: 'Locations', headerShown: false }} />
 
         <View className="flex mt-10">
           <View className="w-full mt-0   flex justify-center items-center">
@@ -44,13 +47,11 @@ const EmployeeList = () => {
               <ScrollView className="h-full flex  w-full px-5">
                 <Workers
                   actionType={CardAction.VIEW}
-                  onAction={(user) => {
-                    navigation.navigate(
+                  onAction={async (user) => {
+                    await Storage.instance.set('workerId', user.id);
+                    navigation.push(
                       //@ts-expect-error invalid-library
-                      `screens/EmployeeReport` as never,
-                      {
-                        params: { workerId: user.id },
-                      } as never,
+                      `/(drawer)/EmployeeReport` as never,
                     );
 
                     return Promise.resolve();
