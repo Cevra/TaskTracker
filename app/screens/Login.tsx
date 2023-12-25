@@ -8,6 +8,7 @@ import SecureButton from '@/components/SecureButton';
 import { FirebaseError } from '@firebase/util';
 import Toast from 'react-native-toast-message';
 import { FIREBASE_ERROR_MESSAGES } from '@/constants';
+import { User } from '@/models/user';
 
 const Login = () => {
   const navigation = useRouter();
@@ -23,7 +24,14 @@ const Login = () => {
     const auth = Auth.instance;
     try {
       await auth.signIn(email, password);
-      navigation.replace('(drawer)/Calendar');
+      const user: User | null = await auth.user();
+      let to = '(drawer)/Calendar';
+
+      if (!user?.worker?.isSetup) {
+        to = 'screens/EditMember';
+      }
+
+      navigation.replace(to);
     } catch (error) {
       let text = 'Unable to authenticate';
 

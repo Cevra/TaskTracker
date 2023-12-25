@@ -1,6 +1,6 @@
 import React from 'react';
 import { Drawer } from 'expo-router/drawer';
-import { View } from 'react-native';
+import { SafeAreaView, View } from 'react-native';
 import Calendar from '@/components/Calendar';
 import Default from '@/layouts/Default';
 import BottomNavigation from '@/components/BottomNavigation';
@@ -11,11 +11,13 @@ export default function CalendarView() {
 
   return (
     <Default>
-      <Drawer.Screen options={{ title: 'Calendar', headerShown: false }} />
-      <Calendar isFocused={isFocused} />
-      <View className="w-full -mb-2">
-        <BottomNavigation />
-      </View>
+      <SafeAreaView className="w-full h-full flex justify-center items-center">
+        <Drawer.Screen options={{ title: 'Calendar', headerShown: false }} />
+        <Calendar isFocused={isFocused} />
+        <View className="w-full -mb-2">
+          <BottomNavigation />
+        </View>
+      </SafeAreaView>
     </Default>
   );
 }
