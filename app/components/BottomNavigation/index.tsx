@@ -11,7 +11,7 @@ export default function BottomNavigation() {
   const links = useMemo<[FC<SvgProps>, { to: string }][]>(
     () => [
       [HomeIcon, { to: 'Calendar' }],
-      [TimeIcon, { to: 'Timesheet' }],
+      [TimeIcon, { to: 'EmployeeList' }],
       [UserIcon, { to: 'Profile' }],
     ],
     [],

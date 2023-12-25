@@ -1,4 +1,4 @@
-export const generatePassword = (length:number) => {
+export const generatePassword = (length: number) => {
   const characters =
     'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
 
