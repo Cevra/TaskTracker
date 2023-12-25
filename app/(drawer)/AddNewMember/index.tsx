@@ -35,7 +35,7 @@ const AddANewMember = () => {
         email,
         type: 'worker',
       });
-      user.addWorkerDetails(new Worker(Auth.currentUser!.id));
+      user.addWorkerDetails(new Worker(Auth.currentUser!.id, '#1F87FE'));
 
       await UserRepository.add(user);
       await sendEmail({

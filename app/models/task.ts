@@ -1,20 +1,23 @@
 export class Task {
-  public readonly id!: string;
+  public id!: string;
+  public clockedIn?: Date;
+  public clockedOut?: Date;
+  public hours: number = 0;
+
   constructor(
     public readonly workerId: string,
-    readonly clockedIn: Date,
-    readonly clockedOut: Date,
     readonly place: string,
-    readonly hours: number,
+    readonly scheduleId: string,
   ) {}
 
-  toJson(): Record<string, string | Date | number> {
+  toJson(): Record<string, string | Date | number | null> {
     return {
-      clockedIn: this.clockedIn,
-      clockedOut: this.clockedOut,
-      place: this.place,
-      hours: this.hours,
       workerId: this.workerId,
+      place: this.place,
+      scheduleId: this.scheduleId,
+      hours: this.hours,
+      clockedIn: this.clockedIn ?? null,
+      clockedOut: this.clockedOut ?? null,
     };
   }
 }

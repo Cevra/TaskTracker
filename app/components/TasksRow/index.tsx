@@ -27,14 +27,6 @@ const TaskRow = ({ color, task }: TaskRowProps) => {
           {task.hours} H
         </Text>
       </View>
-
-      {/* <View className="w-full bg-white rounded-lg p-2 mt-2">
-            <Text className="text-lg font-bold mb-1">TASK</Text>
-            <Text>Date: {date}</Text>
-            <Text>Location: {title}</Text>
-            <Text>Hours: {subtitle}</Text>
-          </View>
-          */}
     </View>
   );
 };

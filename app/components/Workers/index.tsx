@@ -43,7 +43,7 @@ const Workers = ({ actionType, onAction }: WorkersProps) => {
             actionType={actionType}
             title={`${u.name ?? ''}`.trim()}
             subtitle={''}
-            color={`${u.worker?.color ?? ''}`}
+            color={`${u.worker?.color ?? '#000'}`}
             onAction={() => {
               if (actionType === CardAction.CHECKBOX) {
                 setSelected({ ...selected, [u.id]: u.id });

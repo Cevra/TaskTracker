@@ -75,6 +75,7 @@ export default function ChooseDates() {
             scheduledAt,
             payload!.location,
             payload!.workers,
+            payload!.workers.map((w) => w.id),
           ),
       );
 

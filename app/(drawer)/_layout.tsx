@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Text, TouchableOpacity, StyleSheet, View } from 'react-native';
 import { Drawer } from 'expo-router/drawer';
 import {
@@ -6,8 +6,21 @@ import {
   DrawerContentScrollView,
 } from '@react-navigation/drawer';
 import WorkerLogo from '@assets/icons/logo.svg';
+import { Auth } from '@/services/auth';
 
 function CustomDrawerContent(props: DrawerContentComponentProps) {
+  const [type, setType] = useState('worker');
+
+  useEffect(() => {
+    const getUser = async () => {
+      const user = await Auth.instance.user();
+      if (user?.type) {
+        setType(user.type);
+      }
+    };
+
+    getUser();
+  }, []);
   const navigateToScreen = (screenName: string) => {
     props.navigation.navigate(screenName);
     props.navigation.closeDrawer();
@@ -26,12 +39,14 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
         <WorkerLogo width={100} height={100} />
       </View>
 
-      <TouchableOpacity
-        onPress={() => navigateToScreen('ScheduleMembers')}
-        style={styles.button}
-      >
-        <Text className="text-white text-xl">Schedule a Member</Text>
-      </TouchableOpacity>
+      {type === 'company' && (
+        <TouchableOpacity
+          onPress={() => navigateToScreen('ScheduleMembers')}
+          style={styles.button}
+        >
+          <Text className="text-white text-xl">Schedule a Member</Text>
+        </TouchableOpacity>
+      )}
 
       <TouchableOpacity
         onPress={() => navigateToScreen('Calendar')}
@@ -40,19 +55,23 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
         <Text className="text-white text-xl">Edit a Schedule</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity
-        onPress={() => navigateToScreen('AddNewMember')}
-        style={styles.button}
-      >
-        <Text className="text-white text-xl">Add New Member</Text>
-      </TouchableOpacity>
+      {type === 'company' && (
+        <TouchableOpacity
+          onPress={() => navigateToScreen('AddNewMember')}
+          style={styles.button}
+        >
+          <Text className="text-white text-xl">Add New Member</Text>
+        </TouchableOpacity>
+      )}
 
-      <TouchableOpacity
-        onPress={() => navigateToScreen('Locations')}
-        style={styles.button}
-      >
-        <Text className="text-white text-xl ">Add a Job Location</Text>
-      </TouchableOpacity>
+      {type === 'company' && (
+        <TouchableOpacity
+          onPress={() => navigateToScreen('Locations')}
+          style={styles.button}
+        >
+          <Text className="text-white text-xl ">Add a Job Location</Text>
+        </TouchableOpacity>
+      )}
     </DrawerContentScrollView>
   );
 }

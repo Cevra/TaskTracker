@@ -8,6 +8,7 @@ import {
   writeBatch,
   Timestamp,
   updateDoc,
+  orderBy,
 } from 'firebase/firestore';
 import { db } from 'firebaseConfig';
 import { Task } from '@/models/task';
@@ -57,6 +58,36 @@ class Tasks {
 
     return tasks;
   }
+
+  async getTasksForSchedule(
+    userId: string,
+    scheduleId: string,
+  ): Promise<Task[]> {
+    const q = query(
+      collection(db, this.#collectionName),
+      where('workerId', '==', userId),
+      where('scheduleId', '==', scheduleId),
+      orderBy('clockedIn', 'desc'),
+    );
+
+    const querySnapshot = await getDocs(q);
+    const tasks: Task[] = [];
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      const clockedIn = data.clockedIn.toDate();
+      const clockedOut = data.clockedOut
+        ? data.clockedOut.toDate()
+        : data.clockedOut;
+      tasks.push({
+        id: doc.id,
+        ...(data as Partial<Task>),
+        clockedOut,
+        clockedIn,
+      } as Task);
+    });
+
+    return tasks;
+  }
 }
 
-export const TaskRepositories = new Tasks();
+export const TaskRepository = new Tasks();
