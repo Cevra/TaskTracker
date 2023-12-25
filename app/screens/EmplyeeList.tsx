@@ -1,49 +1,68 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, TextInput } from 'react-native';
-import TopBubbleLayout from '@/layouts/TopBubble';
-import { useRouter } from 'expo-router/src/hooks';
-import { User } from '@/models/user';
-import { auth } from 'firebaseConfig';
+import { View, Text, ActivityIndicator } from 'react-native';
+import { useNavigation } from 'expo-router';
+import { CardAction } from '@/components/Card';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Workers from '@/components/Workers';
+import { ScrollView } from 'react-native-gesture-handler';
 import { Auth } from '@/services/auth';
+import UnsafeBubbleLayout from '@/layouts/UnsafeBubbles';
+import BottomNavigation from '@/components/BottomNavigation';
 
 const EmployeeList = () => {
-    const navigation = useRouter();
+  const navigation = useNavigation();
 
-    const [userNames, setUserNames] = useState<string[]>([]);
+  const [dataLoaded, setDataLoaded] = useState(false);
 
   useEffect(() => {
-    const fetchUserNames = async () => {
-      try {
-        const authInstance = Auth.instance;
-        const names = await authInstance.getUserNames();
-        setUserNames(names);
-      } catch (error) {
-        console.error('Error fetching user names:', error);
-      }
+    const fetchData = async () => {
+      await Auth.instance.start();
+      setDataLoaded(true);
     };
 
-    fetchUserNames();
-}, []);
+    fetchData();
+  }, []);
+
   return (
-    <TopBubbleLayout>
-      <SafeAreaView className=" mt-24 ">
+    <UnsafeBubbleLayout>
+      <SafeAreaView className="w-full h-full  justify-between">
         {/* <Header hideTitle={true} logo={{ width: 150, height: 150 }} /> */}
 
         <View className="flex mt-10">
-          <View className="w-full mt-0 mb-10  flex justify-center items-center">
+          <View className="w-full mt-0   flex justify-center items-center">
             <Text className="text-3xl font-bold">Employee list</Text>
           </View>
         </View>
+
         <View>
-        <Text>User Names:</Text>
-        {userNames.map((name, index) => (
-          <Text key={index}>{name}</Text>
-        ))}
-      </View>
+          <View className="w-full h-2/3 mb-auto">
+            {!dataLoaded ? (
+              <View className="h-full justify-center items-center flex w-full px-5">
+                <ActivityIndicator size="large" />
+              </View>
+            ) : (
+              <ScrollView className="h-full flex  w-full px-5">
+                <Workers
+                  actionType={CardAction.VIEW}
+                  onAction={(user) => {
+                    navigation.navigate(
+                      //@ts-expect-error invalid-library
+                      `screens/EmployeeReport` as never,
+                      {
+                        params: { workerId: user.id },
+                      } as never,
+                    );
+
+                    return Promise.resolve();
+                  }}
+                />
+              </ScrollView>
+            )}
+          </View>
+        </View>
+        <BottomNavigation />
       </SafeAreaView>
-    </TopBubbleLayout>
-  
+    </UnsafeBubbleLayout>
   );
 };
 export default EmployeeList;

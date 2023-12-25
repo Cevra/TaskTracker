@@ -54,6 +54,20 @@ class Users {
 
     return users;
   }
+  async getTasksFor(userId: string): Promise<User[]> {
+    const q = query(
+      collection(db, this.#collectionName),
+      where('worker.employerId', '==', userId),
+    );
+    const querySnapshot = await getDocs(q);
+    const users: User[] = [];
+
+    querySnapshot.forEach((doc) => {
+      users.push({ id: doc.id, ...doc.data() } as User);
+    });
+
+    return users;
+  }
 
   async filterBy(params: {
     type?: string;
@@ -82,6 +96,20 @@ class Users {
     const q = query(
       collection(db, this.#collectionName),
       where('worker.employerId', '!=', userId),
+    );
+    const querySnapshot = await getDocs(q);
+    const users: User[] = [];
+
+    querySnapshot.forEach((doc) => {
+      users.push({ id: doc.id, ...doc.data() } as User);
+    });
+
+    return users;
+  }
+  async getTasks(userId: string): Promise<User[]> {
+    const q = query(
+      collection(db, this.#collectionName),
+      where('task.workerId', '!=', userId),
     );
     const querySnapshot = await getDocs(q);
     const users: User[] = [];

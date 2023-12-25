@@ -37,21 +37,24 @@ const Workers = ({ actionType, onAction }: WorkersProps) => {
 
   return (
     <ScrollView className="h-full flex w-full px-5">
-      {workers.map((u: User) => (
-        <Card
-          actionType={actionType}
-          title={`${u.name ?? ''}`.trim()}
-          subtitle={''}
-          onAction={() => {
-            if (actionType === CardAction.CHECKBOX) {
-              setSelected({ ...selected, [u.id]: u.id });
-            }
-            return onAction(u);
-          }}
-          isChecked={!!selected[u.id]}
-          key={u.id}
-        />
-      ))}
+      {workers.map((u: User) => {
+        return (
+          <Card
+            actionType={actionType}
+            title={`${u.name ?? ''}`.trim()}
+            subtitle={''}
+            color={`${u.worker?.color ?? ''}`}
+            onAction={() => {
+              if (actionType === CardAction.CHECKBOX) {
+                setSelected({ ...selected, [u.id]: u.id });
+              }
+              return onAction(u);
+            }}
+            isChecked={!!selected[u.id]}
+            key={u.id}
+          />
+        );
+      })}
     </ScrollView>
   );
 };

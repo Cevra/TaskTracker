@@ -12,6 +12,7 @@ export enum CardAction {
   DELETE = 'delete',
   CHECKBOX = 'checkbox',
   VIEW = 'view',
+  TASK = 'task',
 }
 
 type CardProps = {
@@ -21,6 +22,7 @@ type CardProps = {
   actionType: CardAction;
   color?: string;
   isChecked?: boolean;
+  date?: Date;
 };
 
 const Card = ({
@@ -38,15 +40,17 @@ const Card = ({
     },
     [onAction],
   );
-
   return (
     <TouchableOpacity onPress={onPress}>
       <View className="w-full h-24 flex flex-row justify-start items-center mt-3 p-0 px-2 pb-2 bg-[#C7DEF3] border-2 border-[#E0E0E0] shadow rounded-lg">
         {color && (
-          <View className={`w-12 h-12 rounded-xl border bg-${color}`}></View>
+          <View
+            style={{ backgroundColor: color }}
+            className={`w-12 h-12 rounded-xl `}
+          ></View>
         )}
-        <View className="flex justify-center h-full flex-1 pr-1 pt-1 pb-1">
-          <Text className="text-lg font-bold">{title}</Text>
+        <View className="flex justify-center flex-row items-center space-x-5 h-full flex-1 pr-1 pt-1 pb-1">
+          <Text className="text-lg text-slate-600 font-bold">{title}</Text>
           <Text className={`text-xs text-[#4C5980]`}>{subtitle}</Text>
         </View>
 
@@ -71,6 +75,15 @@ const Card = ({
             className={`w-10 h-10 flex items-center justify-center rounded-xl border bg-white`}
           >
             <Cross width={20} height={20} />
+          </View>
+        )}
+        {actionType === CardAction.TASK && (
+          <View className="w-full bg-white rounded-lg p-2 mt-2">
+            <Text className="text-lg font-bold mb-1">TASK</Text>
+            {/* Assuming you have task data with date, location, and hours properties */}
+            {/* <Text>Date: {date}</Text> */}
+            <Text>Location: {title}</Text>
+            <Text>Hours: {subtitle}</Text>
           </View>
         )}
       </View>

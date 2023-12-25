@@ -8,7 +8,7 @@ export class Worker {
   public ownsTools?: boolean;
   public ownsVehicle?: boolean;
 
-  constructor(public readonly employerId: string) {}
+  constructor(public readonly employerId: string, readonly color: string,) {}
 
   toJson(): Record<
     string,
@@ -24,6 +24,7 @@ export class Worker {
       ownsTools: this.ownsTools ?? null,
       ownsVehicle: this.ownsVehicle ?? null,
       isSetup: this.isSetup,
+      color: this.color,
     };
   }
 }
