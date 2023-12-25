@@ -5,6 +5,7 @@ import {
   signInWithEmailAndPassword,
   updatePassword,
 } from 'firebase/auth';
+import { getDatabase, ref, get } from 'firebase/database';
 import { auth } from 'firebaseConfig';
 import { SignUpProps } from 'types';
 import { EMAIL_REGEX } from '@/constants';
@@ -50,7 +51,26 @@ export class Auth {
     return user ? (JSON.parse(user) as User) : null;
   }
 
-  
+  async getUserNames(): Promise<string[]> {
+    try {
+      const db = getDatabase();
+      const usersRef = ref(db, 'users');
+      const snapshot = await get(usersRef);
+
+      const userNames: string[] = [];
+      if (snapshot.exists()) {
+        snapshot.forEach((childSnapshot) => {
+          const userData = childSnapshot.val();
+          userNames.push(userData.name);
+        });
+      }
+
+      return userNames;
+    } catch (error) {
+      console.error('Error fetching user names:', error);
+      throw error;
+    }
+  }
 
   public start(): Promise<void> {
     return this.firebaseAuth.authStateReady();

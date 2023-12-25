@@ -20,7 +20,7 @@ const ClockRow = ({ task, color }: { color: string; task: Task }) => {
     rows.push({ type: 'clockin', date: task.clockedIn });
   }
 
-  return rows.map(({ type, date }, idx) => (
+  return rows.map(({ type, date }) => (
     <View
       key={`${task.id}-${format(date!, 'HH-mm-ss')}`}
       className="w-full h-10  flex flex-row justify-start items-center mt-3 p-0 px-2 pb-2  "
