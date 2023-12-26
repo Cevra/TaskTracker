@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Text, View, TouchableOpacity } from 'react-native';
+import { Text, View, TouchableOpacity, Keyboard } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Drawer } from 'expo-router/drawer';
 import Default from '@/layouts/Default';
@@ -11,14 +11,65 @@ import PhoneIcon from '@assets/icons/phone.svg';
 import MailIcon from '@assets/icons/mail.svg';
 import MapPinIcon from '@assets/icons/map-pin.svg';
 import LayersIcon from '@assets/icons/layers.svg';
+import { TextInput } from 'react-native-gesture-handler';
+import { UserRepository } from '@/repositories/users';
+import { Company } from '@/models/company';
+
+
+const useIsKeyboardVisiable=()=>{
+
+  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+
+ useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      () => {
+        setKeyboardVisible(true); // or some other action
+      }
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      () => {
+        setKeyboardVisible(false); // or some other action
+      }
+    );
+
+    return () => {
+      keyboardDidHideListener.remove();
+      keyboardDidShowListener.remove();
+
+    };
+  }, []);
+return isKeyboardVisible;
+}
 
 export default function Profile() {
   const [user, setUser] = useState(Auth.currentUser);
+  const [editedUser, setEditedUser] = useState(Auth.currentUser);
+  const [isEditing, setIsEditing] = useState(false);
+ const isKeyboardVisible=useIsKeyboardVisiable();
+
+
+
+
+  const [editedValues, setEditedValues] = useState({
+    phone: user?.phone || '',
+    email: user?.email || '',
+    address: user?.address || '',
+    company: user?.company?.name || '',
+  });
   const navigation = useRouter();
 
   useEffect(() => {
     const getUser = async () => {
-      setUser(await Auth.instance.user());
+      const u = await Auth.instance.user();
+      setUser(u);
+      setEditedValues({
+        phone: u?.phone || '',
+        email: u?.email || '',
+        address: u?.address || '',
+        company: u?.company?.name || '',
+      });
     };
 
     getUser();
@@ -26,14 +77,31 @@ export default function Profile() {
 
   const items = useMemo(
     () => [
-      { key: 'phone', icon: PhoneIcon, value: user?.phone },
-      { key: 'mail', icon: MailIcon, value: user?.email },
-      { key: 'address', icon: MapPinIcon, value: user?.address },
-      { key: 'company', icon: LayersIcon, value: user?.company?.name },
+      { key: 'phone', icon: PhoneIcon, value: editedValues.phone },
+      { key: 'mail', icon: MailIcon, value: editedValues.email },
+      { key: 'address', icon: MapPinIcon, value: editedValues.address },
+      { key: 'company', icon: LayersIcon, value: editedValues.company },
     ],
-    [user],
+    [editedValues],
   );
+  const handleSave = async () => {
+    try {
+      await UserRepository.updateOne(user!.id, {
+        phone: editedValues.phone,
+        address: editedValues.address,
+        company: {
+          ...(user?.company ?? {}),
+          name: editedValues.company,
+        } as Company,
+      });
 
+      
+      
+      setIsEditing(false);
+    } catch (error) {
+      console.error('Error updating user:', error);
+    }
+  };
   return (
     <Default>
       <Drawer.Screen options={{ title: 'Profile', headerShown: false }} />
@@ -52,7 +120,7 @@ export default function Profile() {
         </View>
         <View className="w-full h-auto bg-white rounded-3xl flex justify-center items-center">
           <View className="w-full flex items-center justify-center py-4">
-            <Text className={`text-lg`}>
+            <Text className={`text-xl mb-5 text-slate-600`}>
               {user?.type === 'company' ? 'Employer' : 'Employee'}
             </Text>
             <Text
@@ -60,14 +128,16 @@ export default function Profile() {
                 user?.worker?.color ?? '#1F87FE'
               }]`}
             >
-              {user?.name}
+              <Text className={`text-3xl ml-6 font-bold mt-4 `}>
+                {user?.name}
+              </Text>
             </Text>
           </View>
 
-          <View className="flex border-t justify-end w-full flex-row px-4 py-2">
+          <View className="flex border-t border-slate-400  justify-end w-full flex-row px-4 py-2">
             <View className="flex-row justify-center items-center space-x-2">
               <ClockIcon />
-              <Text className="text-xl font-bold">Online</Text>
+              <Text className="text-xl  text-slate-600 font-bold">Online</Text>
             </View>
           </View>
         </View>
@@ -76,16 +146,37 @@ export default function Profile() {
           {items.map((item) => (
             <View
               key={item.key}
-              className="w-full flex flex-row justify-start items-center py-4 space-x-3 border-b"
+              className="w-full flex flex-row justify-start items-center py-4 space-x-3 border-b border-slate-400 "
             >
               <item.icon />
-              <Text className="text-lg">{item.value}</Text>
+              <TextInput
+                value={item.value}
+                onChangeText={(text) =>
+                  setEditedValues((prev) => ({ ...prev, [item.key]: text }))
+                }
+                placeholder={`Enter ${item.key}`}
+                style={{ flex: 1, fontSize: 18 }}
+                onFocus={() =>{
+                  setIsEditing(true);
+                }}
+                
+              />
             </View>
           ))}
+          {isEditing && (
+            <TouchableOpacity
+              onPress={handleSave}
+              className="bg-blue-500 border  border-slate-400  text-white  py-2 px-4 rounded-3xl mt-12"
+            >
+              <Text  className="text-white text-xl ">Save</Text>
+            </TouchableOpacity>
+          )}
         </View>
 
         <View>
+        {!isKeyboardVisible && (
           <BottomNavigation />
+        )}
         </View>
       </SafeAreaView>
     </Default>

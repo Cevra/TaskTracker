@@ -27,7 +27,8 @@ const Login = () => {
       const user: User | null = await auth.user();
       let to = '(drawer)/Calendar';
 
-      if (!user?.worker?.isSetup) {
+      if (user?.type === 'worker' && !user?.worker?.isSetup) {
+
         to = 'screens/EditMember';
       }
 

@@ -4,6 +4,7 @@ import {
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
   updatePassword,
+  updateProfile
 } from 'firebase/auth';
 import { getDatabase, ref, get } from 'firebase/database';
 import { auth } from 'firebaseConfig';
@@ -49,6 +50,25 @@ export class Auth {
     const user = await Storage.instance.get(`details:${currentUser?.uid}`);
 
     return user ? (JSON.parse(user) as User) : null;
+  }
+
+  async updateUser(updatedUser: User): Promise<void> {
+    const currentUser = this.firebaseAuth.currentUser;
+  
+    if (currentUser) {
+      // Update the Firebase Authentication User's display name
+      updateProfile(currentUser, {
+        displayName: updatedUser.name,
+      });
+  
+      // Update the user in the database
+      await Promise.all([
+        UserRepository.update(updatedUser),
+        Storage.instance.set(`details:${currentUser.uid}`, JSON.stringify(updatedUser)),
+      ]);
+    } else {
+      throw new Error('User not authenticated');
+    }
   }
 
   async getUserNames(): Promise<string[]> {
