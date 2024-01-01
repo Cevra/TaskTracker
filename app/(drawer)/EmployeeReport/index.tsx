@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useLocalSearchParams, useGlobalSearchParams } from 'expo-router';
 import UnsafeBubbleLayout from '@/layouts/UnsafeBubbles';
 import Tasks from '@/components/Tasks';
 import { User } from '@/models/user';
@@ -11,6 +10,7 @@ import { Storage } from '@/services/storage';
 
 const EmployeeReport = () => {
   const [worker, setWorker] = useState<User | null>();
+  const [frequency] = useState<'monthly' | 'weekly' | 'biweekly'>('monthly');
 
   useEffect(() => {
     const getData = async () => {
@@ -38,10 +38,17 @@ const EmployeeReport = () => {
           options={{ title: 'AddNewMember', headerShown: false }}
         />
 
-        <Tasks color="#1F87FE" user={worker}></Tasks>
+
+
+<Tasks color={worker.worker!.color} user={worker}  frequency={frequency}></Tasks>
+       
+
       </SafeAreaView>
       <BottomNavigation />
     </UnsafeBubbleLayout>
   );
 };
 export default EmployeeReport;
+
+
+

@@ -10,9 +10,13 @@ import UnsafeBubbleLayout from '@/layouts/UnsafeBubbles';
 import BottomNavigation from '@/components/BottomNavigation';
 import { Drawer } from 'expo-router/drawer';
 import { Storage } from '@/services/storage';
+import { useNavigation } from 'expo-router';
+
 
 const EmployeeList = () => {
-  const navigation = useRouter();
+  // const navigation = useRouter();
+  const navigation = useNavigation();
+
 
   const [dataLoaded, setDataLoaded] = useState(false);
 
@@ -29,7 +33,7 @@ const EmployeeList = () => {
     <UnsafeBubbleLayout>
 
       <SafeAreaView className="w-full h-full  justify-between">
-      <Drawer.Screen options={{ title: 'Locations', headerShown: false }} />
+      <Drawer.Screen options={{ title: 'EmployeeList', headerShown: false }} />
 
         <View className="flex mt-10">
           <View className="w-full mt-0   flex justify-center items-center">
@@ -40,19 +44,20 @@ const EmployeeList = () => {
         <View>
           <View className="w-full h-2/3 mb-auto">
             {!dataLoaded ? (
-              <View className="h-full justify-center items-center flex w-full px-5">
+              <View className="h-full justify-between items-center  flex w-full px-5">
                 <ActivityIndicator size="large" />
               </View>
             ) : (
-              <ScrollView className="h-full flex  w-full px-5">
+              <ScrollView className="h-full flex w-full px-5">
                 <Workers
                   actionType={CardAction.VIEW}
                   onAction={async (user) => {
                     await Storage.instance.set('workerId', user.id);
-                    navigation.push(
-                      //@ts-expect-error invalid-library
-                      `/(drawer)/EmployeeReport` as never,
-                    );
+                    navigation.navigate('EmployeeReport' as never);
+                    // navigation.push(
+                    //   //@ts-expect-error invalid-library
+                    //   `(drawer)/EmployeeReport` as never,
+                    // );
 
                     return Promise.resolve();
                   }}
