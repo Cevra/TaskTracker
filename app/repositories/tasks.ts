@@ -6,12 +6,12 @@ import {
   doc,
   getDocs,
   writeBatch,
-  Timestamp,
   updateDoc,
   orderBy,
 } from 'firebase/firestore';
 import { db } from 'firebaseConfig';
 import { Task } from '@/models/task';
+import { endOfMonth, endOfWeek, startOfMonth, startOfWeek, subWeeks } from 'date-fns';
 
 class Tasks {
   readonly #collectionName = 'tasks';
@@ -37,10 +37,29 @@ class Tasks {
     return batch.commit();
   }
 
-  async getForRange(workerId: string, start: Date, end: Date): Promise<Task[]> {
-    const startTimestamp = Timestamp.fromDate(start);
-    const endTimestamp = Timestamp.fromDate(end);
+  async getForRange(workerId: string, start: Date, end: Date,frequency: string): Promise<Task[]> {
+   
+   
+    const currentDate = new Date();
+    let startTimestamp, endTimestamp;
 
+    if (frequency === 'monthly') {
+      startTimestamp = startOfMonth(currentDate);
+      endTimestamp = endOfMonth(currentDate);
+    } else if (frequency === 'weekly') {
+      const currentWeekStartDate = startOfWeek(currentDate);
+
+      // Calculate the end of the week based on the beginning of the week
+      startTimestamp = currentWeekStartDate;
+      endTimestamp = endOfWeek(currentWeekStartDate);
+    } else if (frequency === 'biweekly') {
+      startTimestamp = subWeeks(currentDate, 2); // Two weeks ago from the current date
+      endTimestamp = currentDate;
+    } else {
+      // Handle other frequency options if necessary
+      throw new Error('Invalid frequency');
+    }
+    
     const q = query(
       collection(db, this.#collectionName),
       where('workerId', '==', workerId),

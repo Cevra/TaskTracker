@@ -36,7 +36,7 @@ const Workers = ({ actionType, onAction }: WorkersProps) => {
   }
 
   return (
-    <ScrollView className="h-full flex w-full px-5">
+    <ScrollView className="h-full   flex w-full px-5">
       {workers.map((u: User) => {
         return (
           <Card

@@ -35,7 +35,7 @@ const Login = () => {
       navigation.replace(to);
     } catch (error) {
       let text = 'Unable to authenticate';
-
+console.error(error);
       if (error instanceof FirebaseError) {
         text = FIREBASE_ERROR_MESSAGES[error.code];
       }

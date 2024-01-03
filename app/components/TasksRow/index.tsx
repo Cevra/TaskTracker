@@ -20,7 +20,7 @@ const TaskRow = ({ color, task }: TaskRowProps) => {
 
       <View className="flex justify-between flex-row items-center space-x-6 h-full flex-1 pr-1 pt-1 pb-1">
         <Text className="text-lg text-slate-600 font-bold">
-          {format(task.clockedIn, 'dd/MM/yyyy')}
+          {format(task.clockedIn!, 'dd/MM/yyyy')}
         </Text>
         <Text className={`text-xl font-bold text-[#4C5980]`}>{task.place}</Text>
         <Text className={`text-lg font-bold text-[#219653]`}>

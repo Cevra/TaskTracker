@@ -40,6 +40,7 @@ const Card = ({
     },
     [onAction],
   );
+  const textSize = title.length > 15 ? 'text-md' : 'text-lg';
   return (
     <TouchableOpacity onPress={onPress}>
       <View className="w-full h-24 flex flex-row justify-start items-center mt-3 p-0 px-2 pb-2 bg-[#C7DEF3] border-2 border-[#E0E0E0] shadow rounded-lg">
@@ -49,8 +50,8 @@ const Card = ({
             className={`w-12 h-12 rounded-xl `}
           ></View>
         )}
-        <View className="flex justify-center flex-row items-center space-x-5 h-full flex-1 pr-1 pt-1 pb-1">
-          <Text className="text-lg text-slate-600 font-bold">{title}</Text>
+        <View className="flex justify-left flex-row items-center  m-5 h-full flex-1 pr-1 pt-1 pb-1">
+          <Text className={`${textSize} text-slate-600 font-bold`}>{title}</Text>
           <Text className={`text-xs text-[#4C5980]`}>{subtitle}</Text>
         </View>
 
