@@ -40,7 +40,7 @@ export async function sendEmail(options: MailerOptions) {
       subject: options.subject,
       content,
     }),
-  }).catch(() => {
-    throw new Error('Failed to send email');
+  }).catch((e) => {
+    throw new  Error('Failed to send email');
   });
 }
