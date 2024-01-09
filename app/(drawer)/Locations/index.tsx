@@ -14,6 +14,7 @@ import SecureButton from '@/components/SecureButton';
 import { Auth } from '@/services/auth';
 import Locations from '@/components/Locations';
 import { CardAction } from '@/components/Card';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const DEFAULT_ADDRESS: Address = { address: '', placeId: '' };
 
@@ -44,7 +45,6 @@ const AddLocation = () => {
     }
 
     const location = new Location(Auth.currentUser!.id!, address);
-
     try {
       await LocationRepository.add(location);
       Toast.show({
@@ -63,8 +63,10 @@ const AddLocation = () => {
   }, [address]);
 
   return (
-    <TopBubbleLayout classNames="pt-16">
+    <TopBubbleLayout classNames="pt-16" disableKeyboardPush={false}>
       <Drawer.Screen options={{ title: 'Locations', headerShown: false }} />
+      <SafeAreaView className='h-full justify-start w-full'>
+
       <Header hideTitle={true} logo={{ width: 100, height: 100 }} />
 
       <View className="w-full">
@@ -72,7 +74,7 @@ const AddLocation = () => {
           <Text className="text-4xl font-bold">Add a New Location</Text>
         </View>
 
-        <View className="w-full px-4">
+        <View className="w-full px-4 ">
           <GooglePlacesAutocomplete
             placeholder="Enter your location"
             debounce={300}
@@ -80,7 +82,6 @@ const AddLocation = () => {
             styles={{
               container: {
                 flex: 0,
-                zIndex: 0,
               },
               listView: {
                 zIndex: 10,
@@ -105,13 +106,15 @@ const AddLocation = () => {
         </View>
       </View>
 
-      <View className="w-full h-[480px]">
+      <View className="w-full relative z-0 h-[400px]">
         <Locations actionType={CardAction.DELETE} onAction={onDelete} />
       </View>
 
-      <View className="w-full flex mt-3 justify-center items-center">
+      <View className="w-full flex mt-10 justify-center items-center">
         <SecureButton text="SAVE" onPress={onSave} />
       </View>
+      </SafeAreaView>
+
     </TopBubbleLayout>
   );
 };

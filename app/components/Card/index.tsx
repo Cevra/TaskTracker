@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   View,
   Text,
@@ -18,7 +18,7 @@ export enum CardAction {
 type CardProps = {
   title: string;
   subtitle: string;
-  onAction: () => Promise<void>;
+  onAction: (isChecked: boolean) => Promise<void>; 
   actionType: CardAction;
   color?: string;
   isChecked?: boolean;
@@ -31,35 +31,38 @@ const Card = ({
   subtitle,
   actionType,
   onAction,
-  isChecked,
+
 }: CardProps) => {
+  const [isChecked, setIsChecked] = useState(false);
+
   const onPress = useCallback(
     async (e: GestureResponderEvent) => {
-      e.preventDefault();
-      await onAction();
+      setIsChecked(!isChecked);
+      await onAction(!isChecked);
     },
-    [onAction],
-  );
-  const textSize = title.length > 15 ? 'text-md' : 'text-lg';
+    [onAction, isChecked],
+ );
+  
+  const textSize = title.length > 15 ? 'text-lg ' : 'text-xl';
   return (
-    <TouchableOpacity onPress={onPress}>
-      <View className="w-full h-24 flex flex-row justify-start items-center mt-3 p-0 px-2 pb-2 bg-[#C7DEF3] border-2 border-[#E0E0E0] shadow rounded-lg">
+    <TouchableOpacity onPress={onPress} >
+      <View  className={`w-full h-24 flex flex-row justify-start items-center mt-3 p-1 px-2 pb-2 bg-[#C7DEF3] border-2 border-[#E0E0E0] shadow rounded-lg`}>
         {color && (
           <View
             style={{ backgroundColor: color }}
             className={`w-12 h-12 rounded-xl `}
           ></View>
         )}
-        <View className="flex justify-left flex-row items-center  m-5 h-full flex-1 pr-1 pt-1 pb-1">
-          <Text className={`${textSize} text-slate-600 font-bold`}>{title}</Text>
+        <View className="flex justify-center flex-cloumn items-center  m-5 h-full flex-1 pr-1 pt-1 pb-1">
+          <Text  className={`${textSize} text-slate-600 font-bold mt-3 `}>{title}</Text>
           <Text className={`text-xs text-[#4C5980]`}>{subtitle}</Text>
         </View>
 
         {actionType === CardAction.CHECKBOX && (
           <View
-            className={`w-8 h-8 flex items-center justify-center rounded-xl border bg-white`}
+            className={`w-8 h-8 flex items-center  justify-center rounded-xl border bg-white`}
           >
-            {isChecked && <Check />}
+            {isChecked ? <Check /> : null}
           </View>
         )}
 
@@ -83,7 +86,7 @@ const Card = ({
             <Text className="text-lg font-bold mb-1">TASK</Text>
             {/* Assuming you have task data with date, location, and hours properties */}
             {/* <Text>Date: {date}</Text> */}
-            <Text>Location: {title}</Text>
+            <Text style={{ flexWrap: 'wrap' }}>Location: {title}</Text>
             <Text>Hours: {subtitle}</Text>
           </View>
         )}
