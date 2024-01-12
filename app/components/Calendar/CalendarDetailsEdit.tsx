@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, {  useCallback, useEffect, useState } from 'react';
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { format } from 'date-fns';
 import { Schedule } from '@/models/schedule';
@@ -10,9 +10,11 @@ import { LocationRepository } from '@/repositories/locations';
 import { Location } from '@/models/location';
 import { ScheduleMember } from 'types';
 import Toast from 'react-native-toast-message';
+import NoteModal from '../NoteModal';
 
 type CalendarDetailsProps = {
   date: Date;
+ 
   schedule?: Partial<Schedule>;
   setIsEdit: (isEdit: boolean) => void;
   onUpdate: (workers: ScheduleMember[]) => Promise<void>;
@@ -68,7 +70,7 @@ export function CalendarDetailsEdit({
         case 'time': {
           setWorkers((oldWorkers) => {
             return oldWorkers.map((w) =>
-              w.id === id ? { ...w, time: value } : w,
+              w.id === id ? { ...w, note: value } : w,
             );
           });
           return;
@@ -118,7 +120,25 @@ export function CalendarDetailsEdit({
     },
     [setWorkers, options.workers, options.locations],
   );
+  const [isNoteModalVisible, setIsNoteModalVisible] = useState(false);
+  const [selectedWorker, setSelectedWorker] = useState<ScheduleMember | null>(
+    null,
+  );
 
+  const handleNoteIconClick = (worker: ScheduleMember) => {
+    setSelectedWorker(worker);
+    setIsNoteModalVisible(true);
+  };
+  const handleNoteSubmit = (note: string) => {
+    if (selectedWorker) {
+      const updatedWorkers = schedule!.workers!.map((worker) =>
+        worker.id === selectedWorker.id ? { ...worker, note: note } : worker,
+      );
+      onUpdate(updatedWorkers);
+      setSelectedWorker(null);
+    }
+    setIsNoteModalVisible(false);
+  };
   return (
     <View className="w-full rounded-lg bg-modal p-4">
       <View className="flex flex-row justify-between mb-4">
@@ -158,13 +178,20 @@ export function CalendarDetailsEdit({
           <EmployeeRowEdit
             id={worker.id}
             location={worker.location ?? schedule!.location!}
-            time={worker.time}
+            note={worker.note}
             options={options}
             onChange={onChange}
             key={worker.id}
+            onNoteIconClick={() => handleNoteIconClick(worker)}
           />
         ))}
       </ScrollView>
+        {selectedWorker && <NoteModal
+          worker={selectedWorker}
+          isVisible={isNoteModalVisible}
+          setIsVisible={setIsNoteModalVisible}
+          onNoteSubmit={handleNoteSubmit}
+        />}
     </View>
   );
 }

@@ -20,6 +20,7 @@ export default function ChooseMembers() {
   const [workers, setWorkers] = useState<ScheduleMember[]>([]);
   const storage = useMemo(() => Storage.instance, []);
   const navigation = useRouter();
+
   return (
     <UnsafeBubbleLayout>
       <Drawer.Screen options={{ title: 'ChooseMembers', headerShown: false }} />
@@ -48,7 +49,9 @@ export default function ChooseMembers() {
                 }
                 setWorkers([
                   ...workers,
-                  { id: user.id, name: user.name, time: 'N/A' },
+                  { id: user.id, name: user.name,  time: (
+                    <TouchableOpacity >
+                    </TouchableOpacity>   ),},
                 ]);
               }
             }}

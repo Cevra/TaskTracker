@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, ActivityIndicator } from 'react-native';
-import { useRouter } from 'expo-router';
 import { CardAction } from '@/components/Card';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Workers from '@/components/Workers';
@@ -12,11 +11,9 @@ import { Drawer } from 'expo-router/drawer';
 import { Storage } from '@/services/storage';
 import { useNavigation } from 'expo-router';
 
-
 const EmployeeList = () => {
   // const navigation = useRouter();
   const navigation = useNavigation();
-
 
   const [dataLoaded, setDataLoaded] = useState(false);
 
@@ -31,9 +28,10 @@ const EmployeeList = () => {
 
   return (
     <UnsafeBubbleLayout>
-
       <SafeAreaView className="w-full h-full  justify-between">
-      <Drawer.Screen options={{ title: 'EmployeeList', headerShown: false }} />
+        <Drawer.Screen
+          options={{ title: 'EmployeeList', headerShown: false }}
+        />
 
         <View className="flex mt-10">
           <View className="w-full mt-0   flex justify-center items-center">
