@@ -21,7 +21,6 @@ export default function ChooseMembers() {
   const storage = useMemo(() => Storage.instance, []);
   const navigation = useRouter();
 
-
   return (
     <UnsafeBubbleLayout>
       <Drawer.Screen options={{ title: 'ChooseMembers', headerShown: false }} />
@@ -43,6 +42,11 @@ export default function ChooseMembers() {
             actionType={CardAction.CHECKBOX}
             onAction={async (user: User) => {
               if (user?.id) {
+                const index=workers.findIndex((w)=>w.id===user.id);
+                if(index!==-1){
+                  setWorkers(workers.filter((w)=>w.id!==user.id));
+                  return;
+                }
                 setWorkers([
                   ...workers,
                   { id: user.id, name: user.name,  time: (

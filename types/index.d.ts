@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 export type LayoutProps = {
   children: ReactNode;
   classNames?: string;
+  disableKeyboardPush?:boolean;
 };
 
 export interface CreateUserProps {

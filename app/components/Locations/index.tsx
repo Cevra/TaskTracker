@@ -13,17 +13,18 @@ interface LocationsProps {
 const Locations = ({ actionType, onAction }: LocationsProps) => {
   const [locations, setLocations] = useState<Location[]>([]);
   const [location, setLocation] = useState<Location | null>(null);
+  const [dataLoaded, setDataLoaded] = useState(false);
 
   useEffect(() => {
     const unsubscribe = LocationRepository.listenForUser(
       Auth.currentUser!.id!,
       (locations) => setLocations(locations),
     );
-
+    setDataLoaded(true);
     return () => unsubscribe();
   }, []);
 
-  if (locations.length === 0) {
+  if (!dataLoaded) {
     return (
       <View className="h-full justify-center items-center flex w-full px-5">
         <ActivityIndicator size="large" />
@@ -32,7 +33,7 @@ const Locations = ({ actionType, onAction }: LocationsProps) => {
   }
 
   return (
-    <ScrollView className="h-full flex w-full px-5">
+    <View className="h-full z-0 relative flex w-full px-3">
       {locations.map((loc: Location) => (
         <Card
           actionType={actionType}
@@ -49,7 +50,7 @@ const Locations = ({ actionType, onAction }: LocationsProps) => {
           key={loc.placeId}
         />
       ))}
-    </ScrollView>
+    </View>
   );
 };
 
