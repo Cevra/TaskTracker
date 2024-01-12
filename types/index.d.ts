@@ -88,7 +88,8 @@ export interface ScheduleLocation {
 export interface ScheduleMember {
   id: string;
   name: string;
-  time: string;
+  time: React.JSX.Element;
+  note?:string;
   location?: ScheduleLocation;
 }
 

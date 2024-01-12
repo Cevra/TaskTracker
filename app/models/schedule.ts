@@ -30,6 +30,7 @@ export class Schedule {
         id: w.id,
         name: w.name,
         time: w.time,
+        note:w.note,
       })),
       workerIds: this.workerIds,
     };

@@ -48,6 +48,7 @@ export default function CalendarDetailsModal({
           />
         ) : (
           <CalendarDetails
+            onUpdate={onUpdate}
             setIsEdit={setIsEdit}
             schedule={schedule}
             date={date}

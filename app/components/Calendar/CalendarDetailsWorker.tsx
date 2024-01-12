@@ -130,7 +130,6 @@ export function CalendarDetailsWorker({
     },
     [schedule, user],
   );
-
   return (
     <View className="w-full h-[77vh] rounded-lg border bg-modal p-4">
       <View className="flex flex-row justify-between mb-4">
@@ -154,15 +153,19 @@ export function CalendarDetailsWorker({
 
         <View className="flex border-t justify-end w-full flex-row px-4 py-2">
           <View className="flex-row justify-center items-center space-x-2">
-            {tasks.loading ? (
-              <ActivityIndicator size="small" />
-            ) : (
+            {!tasks ? (
+              <View className="h-full justify-between items-center  flex w-full px-5">
+                <ActivityIndicator size="small" />
+              </View>
+            ) : tasks.list.length > 0 ? (
               <>
                 <ClockIcon />
                 <Text className="text-xl font-bold">
                   {tasks.isClockedIn ? 'Clocked in' : 'Clocked out'}
                 </Text>
               </>
+            ) : (
+              <Text>No data available</Text>
             )}
           </View>
         </View>
@@ -170,9 +173,9 @@ export function CalendarDetailsWorker({
 
       <View className="w-full h-96 mt-7 bg-white rounded-3xl">
         <ScrollView className="w-full h-2/3 pt-5 mt-7 mb-1 bg-white rounded-3xl">
-          {tasks.loading ? (
+          {!tasks ? (
             <ActivityIndicator size="large" />
-          ) : (
+          ) : tasks.list.length > 0 ? (
             tasks.list?.map((task) => (
               <ClockRow
                 color={user?.worker?.color ?? '#1F87FE'}
@@ -180,22 +183,32 @@ export function CalendarDetailsWorker({
                 task={task}
               />
             ))
+          ) : (
+            <View className="flex mt-1 justify-start items-center  p-4">
+            <Text className="text-base font-medium">No taks awaliable</Text>
+            </View>
           )}
         </ScrollView>
-
-        <View className="w-full flex mt-1 justify-center items-end px-4">
-          <TouchableOpacity
-            className="flex h-24 justify-center items-center my-2 px-5 rounded-3xl bg-[#7496B7]"
-            onPress={() => onPress(tasks)}
-          >
-            <CheckInIcon
-              className={`${tasks.isClockedIn ? 'rotate-180' : ''}`}
-              width={50}
-            />
-            <Text className="text-white text-md font-bold">
-              {tasks.isClockedIn ? 'Clock Out' : 'Clock In'}
+        <View className="w-full mt-1 flex flex-row items-start justify-between px-1">
+          <View className="flex mt-1 w-2/3 justify-center items-start  p-4">
+            <Text className="text-base">
+              {schedule?.workers?.find((w) => w.id === user?.id)?.note}
             </Text>
-          </TouchableOpacity>
+          </View>
+          <View className=" flex mt-1 w-1/3 justify-center items-end  px-4">
+            <TouchableOpacity
+              className="flex h-24 justify-center items-center my-2 px-5 rounded-3xl bg-[#7496B7]"
+              onPress={() => onPress(tasks)}
+            >
+              <CheckInIcon
+                className={`${tasks.isClockedIn ? 'rotate-180' : ''}`}
+                width={50}
+              />
+              <Text className="text-white text-md font-bold">
+                {tasks.isClockedIn ? 'Clock Out' : 'Clock In'}
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     </View>

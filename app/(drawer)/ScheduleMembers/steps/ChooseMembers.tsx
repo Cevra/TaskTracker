@@ -13,6 +13,8 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import Workers from '@/components/Workers';
 import { User } from '@/models/user';
 import { ScheduleMember } from 'types';
+import Notes from '@assets/icons/pen.svg';
+import NoteModal from '@/components/NoteModal';
 
 export default function ChooseMembers() {
   const [searchPhrase, setSearchPhrase] = useState('');
@@ -20,6 +22,16 @@ export default function ChooseMembers() {
   const [workers, setWorkers] = useState<ScheduleMember[]>([]);
   const storage = useMemo(() => Storage.instance, []);
   const navigation = useRouter();
+  const [isNoteModalVisible, setIsNoteModalVisible] = useState(false);
+
+  const handleIconClick = () => {
+    // Set state to open the modal with a text input area
+    setIsNoteModalVisible(true);
+  };
+  const handleNoteSubmit = (note: string) => {
+    // Do something with the note (e.g., save it to the worker's data)
+    console.log('Note submitted:', note);
+  };
 
   return (
     <UnsafeBubbleLayout>
@@ -44,7 +56,10 @@ export default function ChooseMembers() {
               if (user?.id) {
                 setWorkers([
                   ...workers,
-                  { id: user.id, name: user.name, time: 'N/A' },
+                  { id: user.id, name: user.name,  time: (
+                    <TouchableOpacity onPress={() => handleIconClick()}>
+                      <Notes />
+                    </TouchableOpacity>   ),},
                 ]);
               }
             }}
@@ -68,6 +83,7 @@ export default function ChooseMembers() {
         </View>
         <BottomNavigation />
       </SafeAreaView>
+      {/* <NoteModal isVisible={isNoteModalVisible} setIsVisible={setIsNoteModalVisible} onNoteSubmit={handleNoteSubmit} /> */}
     </UnsafeBubbleLayout>
   );
 }

@@ -1,9 +1,11 @@
-import React from 'react';
-import { View, TextInput, StyleSheet } from 'react-native';
+import React, { ReactNode } from 'react';
+import { View, StyleSheet } from 'react-native';
 import { User } from '@/models/user';
 import { ScheduleLocation } from 'types';
 import { Location } from '@/models/location';
 import Picker from 'react-native-picker-select';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import Notes from '@assets/icons/pen.svg';
 
 export type OnChangeProps = {
   name: string;
@@ -15,20 +17,22 @@ export type OnChangeProps = {
 type EmployeeRowProps = {
   id: string;
   location: ScheduleLocation;
-  time?: string;
+  note?: string;
+  time?: ReactNode;
   options: {
     workers: Partial<User>[];
     locations: Location[];
   };
   onChange: (props: OnChangeProps) => void;
+  onNoteIconClick: () => void;
 };
 
 export default function EmployeeRowEdit({
   id,
   location,
-  time,
   options,
   onChange,
+  onNoteIconClick,
 }: EmployeeRowProps) {
   return (
     <View className="flex flex-row justify-between h-10">
@@ -64,12 +68,9 @@ export default function EmployeeRowEdit({
         />
       </View>
       <View className="flex-1 w-full justify-center items-end border-l">
-        <TextInput
-          className="border bg-white rounded-lg w-[90px] text-center py-[7px]"
-          placeholder="Time"
-          onChangeText={(text) => onChange({ name: 'time', value: text, id })}
-          value={time}
-        />
+        <TouchableOpacity onPress={onNoteIconClick}>
+          <Notes />
+        </TouchableOpacity>
       </View>
     </View>
   );
