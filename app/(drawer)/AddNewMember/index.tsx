@@ -22,13 +22,23 @@ const AddANewMember = () => {
   const [phone, setPhoneNumber] = useState('');
   const [email, setEmail] = useState('');
 
-
   const addNewMember = async () => {
     const password = generatePassword(6);
     const confirmPassword = password;
     const name = `${firstName} ${lastName}`;
     const auth = Auth.instance;
     try {
+      const response = await sendEmail({
+        from: 'no-reply-tasktracker@meta5.io',
+        to: email,
+        subject: `Welcome ${name} to TaskTracker!`,
+        text: `You have been invited to join TaskTracker. Your password is: ${password}. Download the app from your app store and start clocking your hours!`,
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to send email');
+      }
+
       const user = await auth.signUp({
         name,
         password,
@@ -39,14 +49,8 @@ const AddANewMember = () => {
       });
       const workerColor = generateRandomColor();
       user.addWorkerDetails(new Worker(Auth.currentUser!.id, workerColor));
-
       await UserRepository.add(user);
-     const rest= await sendEmail({
-        from: 'no-reply-tasktracker@meta5.io',
-        to: email,
-        subject: `Welcome ${name} to TaskTracker!`,
-        text: `You have been invited to join TaskTracker. Your password is: ${password}. Download the app from your app store and start clocking your hours!`,
-      });
+
       Toast.show({
         type: 'success',
         text1: 'New member invited!',
@@ -104,7 +108,7 @@ const AddANewMember = () => {
             />
             <TextInput
               className="w-80 h-16 bg-input-secondary text-center flex items-center text-xl content-center justify-center rounded-full"
-              placeholder="e-mail"
+              placeholder="E-mail"
               onChangeText={(text) => setEmail(text)}
               value={email}
             />

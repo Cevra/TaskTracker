@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Text, View, TouchableOpacity, Keyboard } from 'react-native';
+import { Text, View, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Drawer } from 'expo-router/drawer';
 import Default from '@/layouts/Default';
@@ -15,42 +15,9 @@ import { TextInput } from 'react-native-gesture-handler';
 import { UserRepository } from '@/repositories/users';
 import { Company } from '@/models/company';
 
-
-const useIsKeyboardVisiable=()=>{
-
-  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
-
- useEffect(() => {
-    const keyboardDidShowListener = Keyboard.addListener(
-      'keyboardDidShow',
-      () => {
-        setKeyboardVisible(true); // or some other action
-      }
-    );
-    const keyboardDidHideListener = Keyboard.addListener(
-      'keyboardDidHide',
-      () => {
-        setKeyboardVisible(false); // or some other action
-      }
-    );
-
-    return () => {
-      keyboardDidHideListener.remove();
-      keyboardDidShowListener.remove();
-
-    };
-  }, []);
-return isKeyboardVisible;
-}
-
 export default function Profile() {
   const [user, setUser] = useState(Auth.currentUser);
-  const [editedUser, setEditedUser] = useState(Auth.currentUser);
   const [isEditing, setIsEditing] = useState(false);
- const isKeyboardVisible=useIsKeyboardVisiable();
-
-
-
 
   const [editedValues, setEditedValues] = useState({
     phone: user?.phone || '',
@@ -84,6 +51,7 @@ export default function Profile() {
     ],
     [editedValues],
   );
+
   const handleSave = async () => {
     try {
       await UserRepository.updateOne(user!.id, {
@@ -95,17 +63,16 @@ export default function Profile() {
         } as Company,
       });
 
-      
-      
       setIsEditing(false);
     } catch (error) {
       console.error('Error updating user:', error);
     }
   };
+
   return (
     <Default>
       <Drawer.Screen options={{ title: 'Profile', headerShown: false }} />
-      <SafeAreaView className="w-full h-full border flex justify-start space-y-8 p-5">
+      <SafeAreaView className="w-full h-screen flex justify-start space-y-8 p-5">
         <View className="w-full flex justify-end items-end px-4">
           <TouchableOpacity
             className="bg-white rounded-3xl py-2 px-4"
@@ -156,28 +123,23 @@ export default function Profile() {
                 }
                 placeholder={`Enter ${item.key}`}
                 style={{ flex: 1, fontSize: 18 }}
-                onFocus={() =>{
+                onFocus={() => {
                   setIsEditing(true);
                 }}
-                
               />
             </View>
           ))}
           {isEditing && (
             <TouchableOpacity
               onPress={handleSave}
-              className="bg-blue-500 border  border-slate-400  text-white  py-2 px-4 rounded-3xl mt-12"
+              className="bg-blue-500 border border-slate-400 text-white py-2 px-4 rounded-3xl mt-12"
             >
-              <Text  className="text-white text-xl ">Save</Text>
+              <Text className="text-white text-xl">Save</Text>
             </TouchableOpacity>
           )}
         </View>
 
-        <View>
-        {!isKeyboardVisible && (
-          <BottomNavigation />
-        )}
-        </View>
+        <BottomNavigation />
       </SafeAreaView>
     </Default>
   );

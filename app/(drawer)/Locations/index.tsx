@@ -63,58 +63,56 @@ const AddLocation = () => {
   }, [address]);
 
   return (
-    <TopBubbleLayout classNames="pt-16" disableKeyboardPush={false}>
+    <TopBubbleLayout classNames="pt-16" enableKeyboardAvoid={false}>
       <Drawer.Screen options={{ title: 'Locations', headerShown: false }} />
-      <SafeAreaView className='h-full justify-start w-full'>
+      <SafeAreaView className="h-full justify-start w-full">
+        <Header hideTitle={true} logo={{ width: 100, height: 100 }} />
 
-      <Header hideTitle={true} logo={{ width: 100, height: 100 }} />
+        <View className="w-full">
+          <View className="w-full mt-4 mb-2 flex justify-center items-center">
+            <Text className="text-4xl font-bold">Add a New Location</Text>
+          </View>
 
-      <View className="w-full">
-        <View className="w-full mt-4 mb-2 flex justify-center items-center">
-          <Text className="text-4xl font-bold">Add a New Location</Text>
+          <View className="w-full px-4 ">
+            <GooglePlacesAutocomplete
+              placeholder="Enter your location"
+              debounce={300}
+              fetchDetails={true}
+              styles={{
+                container: {
+                  flex: 0,
+                },
+                listView: {
+                  zIndex: 10,
+                },
+              }}
+              onFail={(error) => {
+                console.error(error);
+              }}
+              onPress={async (_, details) => {
+                if (!details) {
+                  return;
+                }
+
+                const parsedAddress = parseGoogleMapsResponse(details);
+                setAddress(parsedAddress);
+              }}
+              query={{
+                key: GOOGLE_MAPS_API_KEY,
+                language: 'en',
+              }}
+            />
+          </View>
         </View>
 
-        <View className="w-full px-4 ">
-          <GooglePlacesAutocomplete
-            placeholder="Enter your location"
-            debounce={300}
-            fetchDetails={true}
-            styles={{
-              container: {
-                flex: 0,
-              },
-              listView: {
-                zIndex: 10,
-              },
-            }}
-            onFail={(error) => {
-              console.error(error);
-            }}
-            onPress={async (_, details) => {
-              if (!details) {
-                return;
-              }
-
-              const parsedAddress = parseGoogleMapsResponse(details);
-              setAddress(parsedAddress);
-            }}
-            query={{
-              key: GOOGLE_MAPS_API_KEY,
-              language: 'en',
-            }}
-          />
+        <View className="w-full relative z-0 h-[400px]">
+          <Locations actionType={CardAction.DELETE} onAction={onDelete} />
         </View>
-      </View>
 
-      <View className="w-full relative z-0 h-[400px]">
-        <Locations actionType={CardAction.DELETE} onAction={onDelete} />
-      </View>
-
-      <View className="w-full flex mt-10 justify-center items-center">
-        <SecureButton text="SAVE" onPress={onSave} />
-      </View>
+        <View className="w-full flex mt-10 justify-center items-center">
+          <SecureButton text="SAVE" onPress={onSave} />
+        </View>
       </SafeAreaView>
-
     </TopBubbleLayout>
   );
 };

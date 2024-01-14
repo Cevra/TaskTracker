@@ -4,7 +4,6 @@ import Card, { CardAction } from '@/components/Card';
 import { Auth } from '@/services/auth';
 import { User } from '@/models/user';
 import { UserRepository } from '@/repositories/users';
-
 interface WorkersProps {
   actionType: CardAction;
   onAction: (user: User) => Promise<void>;
