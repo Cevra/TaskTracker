@@ -1,10 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  GestureResponderEvent,
-} from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import Check from '@assets/icons/check.svg';
 import Cross from '@assets/icons/cross.svg';
 
@@ -18,43 +13,41 @@ export enum CardAction {
 type CardProps = {
   title: string;
   subtitle: string;
-  onAction: (isChecked: boolean) => Promise<void>; 
+  onAction: (isChecked: boolean) => Promise<void>;
   actionType: CardAction;
   color?: string;
   isChecked?: boolean;
   date?: Date;
 };
 
-const Card = ({
-  color,
-  title,
-  subtitle,
-  actionType,
-  onAction,
-
-}: CardProps) => {
+const Card = ({ color, title, subtitle, actionType, onAction }: CardProps) => {
   const [isChecked, setIsChecked] = useState(false);
-
-  const onPress = useCallback(
-    async (e: GestureResponderEvent) => {
-      setIsChecked(!isChecked);
-      await onAction(!isChecked);
-    },
-    [onAction, isChecked],
- );
-  
   const textSize = title.length > 15 ? 'text-lg ' : 'text-xl';
+
+  const onPress = useCallback(async () => {
+    setIsChecked(!isChecked);
+    await onAction(!isChecked);
+  }, [onAction, isChecked]);
+
   return (
-    <TouchableOpacity onPress={onPress} >
-      <View  className={`w-full h-24 flex flex-row justify-start items-center mt-3 p-1 px-2 pb-2 bg-[#C7DEF3] border-2 border-[#E0E0E0] shadow rounded-lg`}>
+    <TouchableOpacity onPress={onPress}>
+      <View
+        className={`w-full h-24 flex flex-row justify-start items-center mt-3 p-1 px-2 pb-2 bg-[#C7DEF3] border-2 border-[#E0E0E0] shadow rounded-lg`}
+      >
         {color && (
           <View
             style={{ backgroundColor: color }}
             className={`w-12 h-12 rounded-xl `}
           ></View>
         )}
-        <View className="flex justify-center flex-cloumn items-center  m-5 h-full flex-1 pr-1 pt-1 pb-1">
-          <Text  className={`${textSize} text-slate-600 font-bold mt-3 `}>{title}</Text>
+        <View
+          className={`flex justify-center flex-cloumn ${
+            color ? 'items-center' : 'items-start'
+          } m-5 h-full flex-1 pr-1 pt-1 pb-1`}
+        >
+          <Text className={`${textSize} text-slate-600 font-bold mt-3 `}>
+            {title}
+          </Text>
           <Text className={`text-xs text-[#4C5980]`}>{subtitle}</Text>
         </View>
 

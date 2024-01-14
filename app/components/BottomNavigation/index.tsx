@@ -10,12 +10,11 @@ import { Auth } from '@/services/auth';
 export default function BottomNavigation() {
   const navigation = useNavigation();
   const [user, setUser] = useState(Auth.currentUser);
-  
+
   useEffect(() => {
     const getUser = async () => {
       const u = await Auth.instance.user();
       setUser(u);
-      
     };
 
     getUser();
@@ -28,7 +27,10 @@ export default function BottomNavigation() {
   const links = useMemo<[FC<SvgProps>, { to: string }][]>(
     () => [
       [HomeIcon, { to: 'Calendar' }],
-      [TimeIcon, {to: user?.type === 'worker' ? 'EmployeeReport' : 'EmployeeList' }],
+      [
+        TimeIcon,
+        { to: user?.type === 'worker' ? 'EmployeeReport' : 'EmployeeList' },
+      ],
       [UserIcon, { to: 'Profile' }],
     ],
     [user?.type],
@@ -37,10 +39,7 @@ export default function BottomNavigation() {
     <View className="w-full px-10">
       <View className="w-full h-8 flex-row justify-between px-6 items-center rounded-3xl">
         {links.map(([Icon, { to }], idx: number) => (
-          <TouchableOpacity
-            key={idx}
-            onPress={() => handleNavigation(to)}
-          >
+          <TouchableOpacity key={idx} onPress={() => handleNavigation(to)}>
             <Icon width={20} height={20} />
           </TouchableOpacity>
         ))}

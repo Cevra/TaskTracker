@@ -3,12 +3,16 @@ import { KeyboardAvoidingView, Platform, View } from 'react-native';
 import Toast from 'react-native-toast-message';
 import { LayoutProps } from 'types';
 
-const TopBubbleLayout = ({ children, classNames, disableKeyboardPush=true}: LayoutProps) => {
+const TopBubbleLayout = ({
+  children,
+  classNames,
+  enableKeyboardAvoid = true,
+}: LayoutProps) => {
   return (
     <KeyboardAvoidingView
-    enabled={disableKeyboardPush}
+      enabled={enableKeyboardAvoid}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      className={`w-full h-full bg-layout justify-start items-center ${
+      className={`w-full h-full bg-layout justify-end items-center ${
         classNames ?? ''
       }`}
     >

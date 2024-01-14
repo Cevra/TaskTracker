@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import TaskRow from '../TasksRow';
-import { ActivityIndicator, View, Text } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
-import { TaskRepository } from '@/repositories/tasks';
+import Picker from 'react-native-picker-select';
+import {
+  ActivityIndicator,
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+} from 'react-native';
 import {
   endOfMonth,
   endOfWeek,
@@ -10,22 +14,19 @@ import {
   startOfWeek,
   subWeeks,
 } from 'date-fns';
+import TaskRow from '../TasksRow';
+import { TaskRepository } from '@/repositories/tasks';
 import { Task } from '@/models/task';
 import { User } from '@/models/user';
-import BottomNavigation from '../BottomNavigation';
 import ClockIcon from '@assets/icons/clock.svg';
-import Krug from '@assets/icons/repeat.svg';
-import Strelica from '@assets/icons/chevron-down.svg';
-import Picker from 'react-native-picker-select';
-import { StyleSheet } from 'react-native';
+import Circle from '@assets/icons/repeat.svg';
+import ChevronDown from '@assets/icons/chevron-down.svg';
 
 type TasksProps = {
-  color: string;
   user: User;
-  frequency: 'monthly' | 'weekly' | 'biweekly';
 };
 
-const Tasks = ({ color, user, frequency }: TasksProps) => {
+const Tasks = ({ user }: TasksProps) => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [totalHours, setTotalHours] = useState<number>(0);
   const [selectedFrequency, setSelectedFrequency] = useState('monthly');
@@ -36,16 +37,21 @@ const Tasks = ({ color, user, frequency }: TasksProps) => {
       setLoading(true);
       let startDate, endDate;
 
-      if (selectedFrequency === 'monthly') {
-        startDate = startOfMonth(new Date());
-        endDate = endOfMonth(new Date());
-      } else if (selectedFrequency === 'weekly') {
-        startDate = startOfWeek(new Date());
-        endDate = endOfWeek(new Date());
-      } else if (selectedFrequency === 'biweekly') {
-        endDate = endOfWeek(new Date());
-        startDate = subWeeks(endDate, 2);
+      switch (selectedFrequency) {
+        case 'monthly':
+          startDate = startOfMonth(new Date());
+          endDate = endOfMonth(new Date());
+          break;
+        case 'weekly':
+          startDate = startOfWeek(new Date());
+          endDate = endOfWeek(new Date());
+          break;
+        case 'biweekly':
+          endDate = endOfWeek(new Date());
+          startDate = subWeeks(endDate, 2);
+          break;
       }
+
       try {
         const firebaseTasks = await TaskRepository.getForRange(
           user.id,
@@ -62,11 +68,11 @@ const Tasks = ({ color, user, frequency }: TasksProps) => {
       } catch (error) {
         //console.error('Error fetching tasks:', error);
       } finally {
-        setLoading(false); 
+        setLoading(false);
       }
     };
+
     getData();
-    
   }, [user.id, selectedFrequency]);
 
   if (loading) {
@@ -81,34 +87,41 @@ const Tasks = ({ color, user, frequency }: TasksProps) => {
     <View className="w-full px-5">
       <View className="w-full h-1/5 pt-5 mb-7 border-box flex-col space-y-5   bg-white rounded-3xl justify-center items-center ">
         <View className="pt-5   w-full justify-center items-center">
-        <View className="  flex flex-row justify-center items-center">
-          <Picker 
-            placeholder={{ label: 'Monthly', value: 'monthly' }}
-             style={{
-               placeholder:style.pickerInput,
-               inputAndroidContainer: style.pickerInputContainer,
-               inputIOSContainer: style.pickerInputContainer,
-               inputAndroid: style.pickerInput,
-               inputIOS: style.pickerInput,
-             }}
-            onValueChange={(value) => setSelectedFrequency(value)}
-            items={[
-              { label: 'Monthly   ', value: 'monthly' },
-              { label: 'Weekly', value: 'weekly' },
-              { label: 'Biweekly', value: 'biweekly' },
-            ]}
-            Icon={Strelica as unknown as React.ReactNode} 
-            value={selectedFrequency}
-          /> 
-         
+          <View className="  flex flex-row justify-center items-center">
+            <Picker
+              placeholder={{ label: 'Monthly', value: 'monthly' }}
+              style={{
+                placeholder: style.pickerInput,
+                inputAndroidContainer: style.pickerInputContainer,
+                inputIOSContainer: style.pickerInputContainer,
+                inputAndroid: style.pickerInput,
+                inputIOS: style.pickerInput,
+                iconContainer: {
+                  width: 30,
+                },
+              }}
+              onValueChange={(value) => setSelectedFrequency(value)}
+              items={[
+                { label: 'Monthly   ', value: 'monthly' },
+                { label: 'Weekly', value: 'weekly' },
+                { label: 'Biweekly', value: 'biweekly' },
+              ]}
+              Icon={
+                (() => <ChevronDown width={15} />) as unknown as React.ReactNode
+              }
+              value={selectedFrequency}
+            />
           </View>
-          <Text style={{color:user.worker!.color}}className={`text-3xl font-bold text-[${user.worker!.color}]`}>
+          <Text
+            style={{ color: user.worker!.color }}
+            className={`text-3xl font-bold text-[${user.worker!.color}]`}
+          >
             {user.name}
           </Text>
         </View>
         <View className=" flex border-t   justify-between items-center m-2 mb-6 w-full flex-row p-3 ">
           <View className="  flex-row justify-center  items-center space-x-2">
-            <Krug className="" />
+            <Circle className="" />
             <Text className="text-xl   font-bold">TOTAL HOURS</Text>
           </View>
           <View className=" flex-row justify-center items-center space-x-2">
@@ -119,17 +132,22 @@ const Tasks = ({ color, user, frequency }: TasksProps) => {
       </View>
       <ScrollView className="w-full h-2/3 pt-5 mb-7 bg-white rounded-3xl ">
         <Text className="text-xl ml-6 font-bold">Work History</Text>
-        {tasks.length === 0 ?   <Text className="text-lg  ml-6 mt-3 font-normal">There were no tasks for this time period</Text>: tasks.map((task) => {
-          return (
-            <TaskRow
-              color={user.worker!.color}
-              task={task}
-              key={task.id}
-            ></TaskRow>
-          );
-        })}
+        {tasks.length === 0 ? (
+          <Text className="text-lg pl-4 mt-3 font-normal">
+            There were no tasks for this time period
+          </Text>
+        ) : (
+          tasks.map((task) => {
+            return (
+              <TaskRow
+                color={user.worker!.color}
+                task={task}
+                key={task.id}
+              ></TaskRow>
+            );
+          })
+        )}
       </ScrollView>
-      <BottomNavigation />
     </View>
   );
 };
@@ -147,9 +165,9 @@ const style = StyleSheet.create({
   pickerInput: {
     textAlign: 'center',
     fontSize: 22,
-    color:'#000',
+    color: '#000',
     fontWeight: 'bold',
-    paddingRight:20,
+    paddingRight: 20,
   },
 });
 

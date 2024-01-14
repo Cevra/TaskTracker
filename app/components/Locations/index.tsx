@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, View, ActivityIndicator } from 'react-native';
+import { View, ActivityIndicator } from 'react-native';
 import Card, { CardAction } from '../Card';
 import { Location } from '@/models/location';
 import { LocationRepository } from '@/repositories/locations';

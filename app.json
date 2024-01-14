@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "TaskTracker",
-    "slug": "TaskTracker",
+    "slug": "tasktracker",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -32,6 +32,15 @@
     },
     "plugins": [
       "expo-router"
-    ]
+    ],
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "aaae3989-a760-467c-ab74-ec7e714d34de"
+      }
+    },
+    "owner": "mirsad"
   }
 }

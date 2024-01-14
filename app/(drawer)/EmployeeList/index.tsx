@@ -3,24 +3,20 @@ import { View, Text, ActivityIndicator } from 'react-native';
 import { CardAction } from '@/components/Card';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Workers from '@/components/Workers';
-import { ScrollView } from 'react-native-gesture-handler';
 import { Auth } from '@/services/auth';
 import UnsafeBubbleLayout from '@/layouts/UnsafeBubbles';
 import BottomNavigation from '@/components/BottomNavigation';
 import { Drawer } from 'expo-router/drawer';
-import { Storage } from '@/services/storage';
 import { useNavigation } from 'expo-router';
 
 const EmployeeList = () => {
-  // const navigation = useRouter();
   const navigation = useNavigation();
-
-  const [dataLoaded, setDataLoaded] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       await Auth.instance.start();
-      setDataLoaded(true);
+      setIsLoading(false);
     };
 
     fetchData();
@@ -28,39 +24,31 @@ const EmployeeList = () => {
 
   return (
     <UnsafeBubbleLayout>
-      <SafeAreaView className="w-full h-full  justify-between">
+      <SafeAreaView className="w-full h-full justify-between">
         <Drawer.Screen
           options={{ title: 'EmployeeList', headerShown: false }}
         />
 
         <View className="flex mt-10">
-          <View className="w-full mt-0   flex justify-center items-center">
+          <View className="w-full mt-0 flex justify-center items-center">
             <Text className="text-3xl font-bold">Employee list</Text>
           </View>
         </View>
 
         <View>
-          <View className="w-full h-2/3 mb-auto">
-            {!dataLoaded ? (
-              <View className="h-full justify-between items-center  flex w-full px-5">
+          <View className="w-full max-h-[600px] mb-auto">
+            {isLoading ? (
+              <View className="h-full justify-between items-center flex w-full px-5">
                 <ActivityIndicator size="large" />
               </View>
             ) : (
-              <ScrollView className="h-full flex w-full px-5">
-                <Workers
-                  actionType={CardAction.VIEW}
-                  onAction={async (user) => {
-                    await Storage.instance.set('workerId', user.id);
-                    navigation.navigate('EmployeeReport' as never);
-                    // navigation.push(
-                    //   //@ts-expect-error invalid-library
-                    //   `(drawer)/EmployeeReport` as never,
-                    // );
-
-                    return Promise.resolve();
-                  }}
-                />
-              </ScrollView>
+              <Workers
+                actionType={CardAction.VIEW}
+                onAction={async (user) => {
+                  // @ts-expect-error invalid lib ts definitions
+                  navigation.navigate('EmployeeReport', { workerId: user.id });
+                }}
+              />
             )}
           </View>
         </View>

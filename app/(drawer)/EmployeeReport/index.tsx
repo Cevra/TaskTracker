@@ -6,54 +6,63 @@ import { UserRepository } from '@/repositories/users';
 import { ActivityIndicator, View, SafeAreaView } from 'react-native';
 import BottomNavigation from '@/components/BottomNavigation';
 import { Drawer } from 'expo-router/drawer';
-import { Storage } from '@/services/storage';
 import { Auth } from '@/services/auth';
 import { useIsFocused } from '@react-navigation/native';
+import {
+  useGlobalSearchParams,
+  useLocalSearchParams,
+} from 'expo-router/src/hooks';
 
 const EmployeeReport = () => {
-  const [worker, setWorker] = useState<User | null>();
-  const [frequency] = useState<'monthly' | 'weekly' | 'biweekly'>('monthly');
+  const params = useLocalSearchParams<{ workerId: string }>();
+  const globalParams = useGlobalSearchParams<{ workerId: string }>();
+  const [user, setUser] = useState<User | null>();
   const isFocused = useIsFocused();
+
   useEffect(() => {
-    const currentUser = Auth.currentUser;
-
     const getData = async () => {
-      if (currentUser?.id) {
-        let firebaseWorker;
+      let firebaseWorker;
+      const currentUser = await Auth.instance.user();
 
-        const currentUser = await Auth.instance.user();
-        if (currentUser?.type === 'worker') {
+      switch (currentUser?.type) {
+        case 'worker':
           firebaseWorker = await UserRepository.getById(currentUser.id);
-        } else if (currentUser?.type === 'company') {
-          const userId = await Storage.instance.get('workerId');
-          firebaseWorker = await UserRepository.getById(userId!);
-        }
-        setWorker(firebaseWorker);
+          break;
+        default:
+          firebaseWorker = await UserRepository.getById(
+            params.workerId ?? globalParams.workerId!,
+          );
+          break;
       }
+      setUser(firebaseWorker);
     };
-    getData();
-  }, [isFocused]);
-  if (!isFocused || !worker) {
+
+    if (isFocused) {
+      getData();
+    }
+
+    return () => {
+      setUser(null);
+    };
+  }, [isFocused, params.workerId, globalParams.workerId]);
+
+  if (!isFocused || !user) {
     return (
       <View className="h-full justify-center items-center flex w-full px-5">
         <ActivityIndicator size="large" />
       </View>
     );
   }
+
   return (
     <UnsafeBubbleLayout>
       <SafeAreaView className="w-full h-full mt-3 justify-end">
         <Drawer.Screen
           options={{ title: 'AddNewMember', headerShown: false }}
         />
-
-        <Tasks
-          color={worker.worker!.color}
-          user={worker}
-          frequency={frequency}
-        ></Tasks>
+        <Tasks user={user}></Tasks>
+        <BottomNavigation />
       </SafeAreaView>
-      <BottomNavigation />
     </UnsafeBubbleLayout>
   );
 };

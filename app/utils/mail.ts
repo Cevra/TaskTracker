@@ -41,6 +41,7 @@ export async function sendEmail(options: MailerOptions) {
       content,
     }),
   }).catch((e) => {
-    throw new  Error('Failed to send email');
+    console.error(e);
+    throw new Error('Failed to send email');
   });
 }
