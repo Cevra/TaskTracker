@@ -1,52 +1,20 @@
-import React, { useState, useMemo, useEffect, useCallback } from 'react';
-import { View, ActivityIndicator, GestureResponderEvent } from 'react-native';
-import { useNavigation } from 'expo-router';
+import React, { useState, useMemo, useCallback } from 'react';
+import { View, TouchableOpacity, SafeAreaView } from 'react-native';
+import { useRouter } from 'expo-router';
 import { Drawer } from 'expo-router/drawer';
-import Toast from 'react-native-toast-message';
+import { format } from 'date-fns';
 import { STORAGE_KEYS } from '@/constants';
 import { Storage } from '@/services/storage';
 import Calendar from '@/components/Calendar';
 import Default from '@/layouts/Default';
-import type {
-  ChooseDatesState,
-  ScheduleLocation,
-  ScheduleMember,
-  SelectedDate,
-} from 'types';
 import type { CalendarDay } from '@/components/Calendar/CalendarItem';
-import SecureButton from '@/components/SecureButton';
-import { Schedule } from '@/models/schedule';
-import { Auth } from '@/services/auth';
-import { ScheduleRepository } from '@/repositories/schedules';
-import { UserRepository } from '@/repositories/users';
+import type { SelectedDate } from 'types';
+import ChevronRight from '@assets/icons/chevron-right.svg';
 
 export default function ChooseDates() {
-  const [isLoaded, setIsLoaded] = useState(false);
   const [selectedDates, setSelectedDates] = useState<SelectedDate[]>([]);
   const storage = useMemo(() => Storage.instance, []);
-  const [payload, setPayload] = useState<ChooseDatesState | null>(null);
-  const navigation = useNavigation();
-
-  useEffect(() => {
-    const getData = async () => {
-      const location: ScheduleLocation = JSON.parse(
-        (await storage.get(STORAGE_KEYS.SCHEDULE_LOCATION)) ?? '{}',
-      );
-
-      const workers: ScheduleMember[] = JSON.parse(
-        (await storage.get(STORAGE_KEYS.SCHEDULE_WORKERS)) ?? '{}',
-      );
-
-      setPayload({
-        location,
-        workers,
-      });
-
-      setIsLoaded(true);
-    };
-
-    getData();
-  }, [storage]);
+  const navigation = useRouter();
 
   const onItemClick = useCallback(
     (day: CalendarDay) => {
@@ -63,66 +31,40 @@ export default function ChooseDates() {
   );
 
   const onPress = useCallback(
-    async (e: GestureResponderEvent) => {
-      e.preventDefault();
-      const userId = Auth.currentUser!.id!;
-      const user = await UserRepository.getById(userId);
-      const schedules = selectedDates.map(
-        ({ date: scheduledAt }) =>
-          new Schedule(
-            user!.id,
-            user!.company!.name,
-            scheduledAt,
-            payload!.location,
-            payload!.workers,
-            payload!.workers.map((w) => w.id),
-          ),
+    async (
+      nav: { push: (path: string) => void },
+      store: Readonly<Storage>,
+      dates: SelectedDate[],
+    ) => {
+      await store.set(
+        STORAGE_KEYS.SCHEDULE_DATES,
+        JSON.stringify(dates.map((d) => format(d.date, 'yyyy-MM-dd'))),
       );
 
-      try {
-        await ScheduleRepository.addBatch(schedules);
-
-        Toast.show({
-          type: 'success',
-          text1: 'Schedule added!',
-        });
-
-        setTimeout(() => {
-          navigation.navigate('Calendar' as never);
-        }, 1000);
-      } catch (e) {
-        Toast.show({
-          type: 'error',
-          text1: 'Unable to save schedule',
-          text2: 'Please check data and try again',
-        });
-      }
+      nav.push('/(drawer)/ScheduleMembers/steps/ChooseLocation');
     },
-    [selectedDates, navigation, payload],
+    [],
   );
-
-  if (!isLoaded) {
-    return (
-      <View className="h-full justify-center items-center flex w-full px-5">
-        <Drawer.Screen options={{ title: 'ChooseDates', headerShown: false }} />
-        <ActivityIndicator size="large" />
-      </View>
-    );
-  }
 
   return (
     <Default>
-      <Drawer.Screen options={{ title: 'ChooseDates', headerShown: false }} />
-      <Calendar
-        showAvailableDays
-        hideModal
-        onItemClick={onItemClick}
-        selectedDates={selectedDates}
-        workerIds={payload?.workers.map((w) => w.id)}
-      />
-      <View className="w-full flex justify-center items-center">
-        <SecureButton classNames="h-10 -mb-3" text="SAVE" onPress={onPress} />
-      </View>
+      <SafeAreaView className="w-full items-center h-screen">
+        <Drawer.Screen options={{ title: 'ChooseDates', headerShown: false }} />
+        <Calendar
+          hideModal
+          onItemClick={onItemClick}
+          selectedDates={selectedDates}
+        />
+        <View className="w-full flex items-end px-8 pt-10">
+          {!!selectedDates.length && (
+            <TouchableOpacity
+              onPress={() => onPress(navigation, storage, selectedDates)}
+            >
+              <ChevronRight />
+            </TouchableOpacity>
+          )}
+        </View>
+      </SafeAreaView>
     </Default>
   );
 }

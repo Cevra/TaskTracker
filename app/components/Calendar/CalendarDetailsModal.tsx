@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Modal, TouchableWithoutFeedback, View } from 'react-native';
-import { CalendarDetails } from './CalendarDetails';
-import { CalendarDetailsEdit } from './CalendarDetailsEdit';
+import { CalendarDetailsCompany } from './CalendarDetailsCompany';
 import { Schedule } from '@/models/schedule';
 import { ScheduleMember } from 'types';
 import { User } from '@/models/user';
@@ -24,8 +23,6 @@ export default function CalendarDetailsModal({
   setIsVisible,
   onUpdate,
 }: CalendarDetailsModalProps) {
-  const [isEdit, setIsEdit] = useState(false);
-
   return (
     <Modal animationType="slide" transparent={true} visible={isVisible}>
       <TouchableWithoutFeedback onPress={() => setIsVisible(!isVisible)}>
@@ -39,17 +36,9 @@ export default function CalendarDetailsModal({
       >
         {user?.type === 'worker' ? (
           <CalendarDetailsWorker user={user} date={date} schedule={schedule} />
-        ) : isEdit ? (
-          <CalendarDetailsEdit
-            onUpdate={onUpdate}
-            setIsEdit={setIsEdit}
-            schedule={schedule}
-            date={date}
-          />
         ) : (
-          <CalendarDetails
+          <CalendarDetailsCompany
             onUpdate={onUpdate}
-            setIsEdit={setIsEdit}
             schedule={schedule}
             date={date}
           />

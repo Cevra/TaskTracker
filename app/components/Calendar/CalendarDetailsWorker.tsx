@@ -185,7 +185,7 @@ export function CalendarDetailsWorker({
             ))
           ) : (
             <View className="flex mt-1 justify-start items-center  p-4">
-            <Text className="text-base font-medium">No taks awaliable</Text>
+              <Text className="text-base font-medium">No tasks available</Text>
             </View>
           )}
         </ScrollView>

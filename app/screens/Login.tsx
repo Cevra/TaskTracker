@@ -28,14 +28,12 @@ const Login = () => {
       let to = '(drawer)/Calendar';
 
       if (user?.type === 'worker' && !user?.worker?.isSetup) {
-
         to = 'screens/EditMember';
       }
 
       navigation.replace(to);
     } catch (error) {
       let text = 'Unable to authenticate';
-console.error(error);
       if (error instanceof FirebaseError) {
         text = FIREBASE_ERROR_MESSAGES[error.code];
       }

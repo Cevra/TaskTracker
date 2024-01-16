@@ -34,6 +34,23 @@ class Locations {
     return locations;
   }
 
+  async getForUser(userId: string): Promise<Location[]> {
+    const q = query(
+      collection(db, this.#collectionName),
+      where('userId', '==', userId),
+      orderBy('createdAt', 'desc'),
+    );
+    const locations: Location[] = [];
+
+    const querySnapshot = await getDocs(q);
+
+    querySnapshot.forEach((doc) => {
+      locations.push({ id: doc.id, ...doc.data() } as Location);
+    });
+
+    return locations;
+  }
+
   remove(id: string): Promise<void> {
     return deleteDoc(doc(db, this.#collectionName, id));
   }

@@ -89,8 +89,7 @@ export interface ScheduleLocation {
 export interface ScheduleMember {
   id: string;
   name: string;
-  time: React.JSX.Element;
-  note?:string;
+  note?: string;
   location?: ScheduleLocation;
 }
 
@@ -113,7 +112,7 @@ export interface SelectedDate {
 }
 
 type BaseMailOptions = {
-  to: string;
+  to: string[];
   from: string;
   subject?: string;
 };
@@ -129,3 +128,9 @@ export type HtmlMailOptions = BaseMailOptions & {
 };
 
 export type MailerOptions = PlainTextMailOptions | HtmlMailOptions;
+
+export type CalendarDay = {
+  date: Date;
+  isActive: boolean;
+  key: string;
+};

@@ -13,7 +13,7 @@ export enum CardAction {
 type CardProps = {
   title: string;
   subtitle: string;
-  onAction: (isChecked: boolean) => Promise<void>;
+  onAction: (isChecked?: boolean) => Promise<void>;
   actionType: CardAction;
   color?: string;
   isChecked?: boolean;

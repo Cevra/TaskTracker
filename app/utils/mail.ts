@@ -27,11 +27,9 @@ export async function sendEmail(options: MailerOptions) {
     body: JSON.stringify({
       personalizations: [
         {
-          to: [
-            {
-              email: options.to,
-            },
-          ],
+          to: options.to.map((email) => ({
+            email,
+          })),
         },
       ],
       from: {

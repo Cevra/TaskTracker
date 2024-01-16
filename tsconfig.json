@@ -23,6 +23,6 @@
     }
   },
   "exclude": ["node_modules"],
-  "include": ["./App.tsx", "./app/**/*", "./*.js"],
+  "include": ["./App.tsx", "./app/**/*", "./*.js", "./*.json"],
   "extends": "expo/tsconfig.base"
 }

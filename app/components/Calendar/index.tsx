@@ -19,16 +19,14 @@ import { ScheduleRepository } from '@/repositories/schedules';
 import { Schedule } from '@/models/schedule';
 import { Auth } from '@/services/auth';
 import CalendarDetailsModal from './CalendarDetailsModal';
-import CalendarItem, { CalendarDay, CalendarItemProps } from './CalendarItem';
-import { ScheduleMember, SelectedDate } from 'types';
+import CalendarItem, { CalendarItemProps } from './CalendarItem';
 import { User } from '@/models/user';
+import type { CalendarDay, ScheduleMember, SelectedDate } from 'types';
 
 const INCREMENT = 1;
 const DECREMENT = -1;
 
 type CalendarProps = {
-  workerIds?: string[];
-  showAvailableDays?: boolean;
   hideModal?: boolean;
   isFocused?: boolean;
   onItemClick?: (item: CalendarDay) => void;
@@ -42,22 +40,21 @@ const getDefault = () => {
   return { date: today, days, end, start };
 };
 
+type CalendarSchedules = Record<string, Partial<Schedule>>;
+
 export default function Calendar({
-  workerIds,
-  showAvailableDays,
   hideModal,
   onItemClick,
   selectedDates,
   isFocused,
 }: CalendarProps) {
-  const [schedules, setSchedules] = useState<Record<string, Partial<Schedule>>>(
-    {},
-  );
+  const [schedules, setSchedules] = useState<CalendarSchedules>({});
   const [user, setUser] = useState(Auth.currentUser);
   const [calendar, setCalendar] = useState(() => getDefault());
-  const [selected, setSelected] = useState<{ key: string; date: Date }>({
+  const [selectedDay, setSelectedDay] = useState<CalendarDay>({
     key: format(new Date(), 'yyyy-MM-dd'),
     date: new Date(),
+    isActive: true,
   });
   const [isVisible, setIsVisible] = useState(false);
   const dimensions = useWindowDimensions();
@@ -99,31 +96,24 @@ export default function Calendar({
     ({ item }: CalendarItemProps) => {
       const schedule = schedules[item.key];
       const isSelected = selectedDates?.some((d) => d.key === item.key);
-      const isAvailable = showAvailableDays
-        ? !schedule?.workers?.some((w) => workerIds?.includes(w.id))
-        : false;
 
       return (
         <Animated.View>
           <TouchableOpacity
             onPress={() => {
-              if (onItemClick && isAvailable) {
+              if (onItemClick) {
                 onItemClick(item);
                 return;
               }
 
               if (!hideModal) {
-                setSelected({
-                  key: item.key,
-                  date: item.date,
-                });
+                setSelectedDay(item);
                 setIsVisible(true);
               }
             }}
           >
             <CalendarItem
               isSelected={isSelected}
-              isAvailable={isAvailable}
               schedule={schedule}
               item={item}
               isForWorker={user?.type === 'worker'}
@@ -132,20 +122,16 @@ export default function Calendar({
         </Animated.View>
       );
     },
-    [
-      schedules,
-      workerIds,
-      onItemClick,
-      hideModal,
-      selectedDates,
-      showAvailableDays,
-      user?.type,
-    ],
+    [schedules, onItemClick, hideModal, selectedDates, user?.type],
   );
 
   const onUpdate = useCallback(
-    async (workers: ScheduleMember[]) => {
-      const schedule = schedules[selected.key];
+    async (
+      workers: ScheduleMember[],
+      schedules: CalendarSchedules,
+      day: CalendarDay,
+    ) => {
+      const schedule = schedules[day.key];
 
       if (schedule?.id) {
         await ScheduleRepository.update(schedule.id, {
@@ -153,11 +139,11 @@ export default function Calendar({
         });
 
         setSchedules((old) => {
-          return { ...old, [selected.key]: { ...schedule, workers } };
+          return { ...old, [day.key]: { ...schedule, workers } };
         });
       }
     },
-    [schedules, selected.key],
+    [],
   );
 
   const animatedStyles = useAnimatedStyle(() => ({
@@ -197,11 +183,11 @@ export default function Calendar({
     <>
       {!hideModal && (
         <CalendarDetailsModal
-          onUpdate={onUpdate}
+          onUpdate={(workers) => onUpdate(workers, schedules, selectedDay)}
           isVisible={isVisible}
           setIsVisible={setIsVisible}
-          schedule={schedules[selected.key]}
-          date={selected.date}
+          schedule={schedules[selectedDay.key]}
+          date={selectedDay.date}
           user={user}
         />
       )}
