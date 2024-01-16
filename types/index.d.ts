@@ -128,3 +128,9 @@ export type HtmlMailOptions = BaseMailOptions & {
 };
 
 export type MailerOptions = PlainTextMailOptions | HtmlMailOptions;
+
+export type CalendarDay = {
+  date: Date;
+  isActive: boolean;
+  key: string;
+};

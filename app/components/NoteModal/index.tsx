@@ -6,9 +6,10 @@ import {
   TextInput,
   TouchableOpacity,
   TouchableWithoutFeedback,
+  ScrollView,
 } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
 import { ScheduleMember } from 'types';
+import Cross from '@assets/icons/cross.svg';
 
 type NoteModalProps = {
   worker: ScheduleMember;
@@ -61,9 +62,14 @@ const NoteModal: React.FC<NoteModalProps> = ({
             borderWidth: 1,
           }}
         >
-          <Text style={{ fontSize: 18, marginBottom: 10, color: 'black' }}>
-            Add Note
-          </Text>
+          <View className="flex w-full flex-row justify-between items-start">
+            <Text style={{ fontSize: 18, marginBottom: 10, color: 'black' }}>
+              Add Note
+            </Text>
+            <TouchableOpacity onPress={() => onNoteSubmit(note)}>
+              <Cross width={12} height={12} />
+            </TouchableOpacity>
+          </View>
           <TextInput
             autoFocus={true}
             style={{

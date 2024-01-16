@@ -6,7 +6,6 @@ import {
   doc,
   getDocs,
   writeBatch,
-  Timestamp,
   updateDoc,
 } from 'firebase/firestore';
 import { format } from 'date-fns';
@@ -41,7 +40,7 @@ class Schedules {
   async getWorkersForDay(date: Date): Promise<ScheduleMember[]> {
     const q = query(
       collection(db, this.#collectionName),
-      where('scheduledAt', '==', Timestamp.fromDate(date)),
+      where('scheduledAt', '==', format(date, 'yyyy-MM-dd')),
     );
 
     const querySnapshot = await getDocs(q);
@@ -77,23 +76,26 @@ class Schedules {
   async getForRange(
     userId: string,
     type: 'worker' | 'company',
-    dates: string[],
+    start: Date,
+    end: Date,
   ): Promise<Record<string, Schedule>> {
+    const [s, e] = [format(start, 'yyyy-MM-dd'), format(end, 'yyyy-MM-dd')];
+
     const q = query(
       collection(db, this.#collectionName),
       type === 'company'
         ? where('createdById', '==', userId)
         : where('workerIds', 'array-contains', userId),
-      where('scheduledAt', 'array-contains', dates),
+      where('scheduledAt', '>=', s),
+      where('scheduledAt', '<=', e),
     );
     const querySnapshot = await getDocs(q);
     const schedules: Record<string, Schedule> = {};
 
     querySnapshot.forEach((doc) => {
-      const data = doc.data();
-      const date = data.scheduledAt.toDate();
-      const key = format(date, 'yyyy-MM-dd');
-      schedules[key] = { id: doc.id, scheduledAt: date, ...data } as Schedule;
+      console.log(doc);
+      const data = doc.data() as Schedule;
+      schedules[data.scheduledAt] = { id: doc.id, ...data } as Schedule;
     });
 
     return schedules;

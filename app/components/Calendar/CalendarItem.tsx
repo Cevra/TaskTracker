@@ -1,12 +1,7 @@
 import { Schedule } from '@/models/schedule';
 import React from 'react';
 import { Text, View } from 'react-native';
-
-export type CalendarDay = {
-  date: Date;
-  isActive: boolean;
-  key: string;
-};
+import type { CalendarDay } from 'types';
 
 export type CalendarItemProps = {
   item: CalendarDay;
@@ -16,9 +11,11 @@ export type CalendarItemProps = {
   isForWorker?: boolean;
 };
 
+const MAX_IN_CELL = 5;
+
 const Employee = ({ name, color }: { name: string; color?: string }) => {
   return (
-    <Text className={`text-[10px] ${color ? color : 'text-black'}`}>
+    <Text style={{ color: color ?? '#000' }} className={`text-[7px] mb-[5px]`}>
       {name}
     </Text>
   );
@@ -45,13 +42,25 @@ export default function CalendarItem({
           </Text>
         </View>
       </View>
-      <View className="w-[50px] h-28 bg-shade-blue rounded p-1">
+      <View className="w-[50px] h-28 space-y-1 bg-shade-blue rounded p-1">
         {isForWorker ? (
           <Employee key={schedule?.id} name={schedule?.company ?? ''} />
         ) : (
-          schedule?.workers?.map((worker) => (
-            <Employee key={worker.id} name={worker.name} />
-          ))
+          <>
+            {schedule?.workers
+              ?.slice(0, MAX_IN_CELL)
+              .map((worker) => <Employee key={worker.id} name={worker.name} />)}
+            {schedule?.workers?.length &&
+              schedule.workers.length > MAX_IN_CELL && (
+                <View className="w-full flex justify-center items-center">
+                  <View className="px-[4px] py-[2px] bg-slate-400 rounded-2xl">
+                    <Text className="text-[8px]">
+                      +{schedule.workers.length - MAX_IN_CELL}
+                    </Text>
+                  </View>
+                </View>
+              )}
+          </>
         )}
       </View>
     </View>
