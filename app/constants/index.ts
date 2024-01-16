@@ -27,6 +27,7 @@ export const STORAGE_KEYS = {
   WELCOME: 'welcome',
   ROLE: 'role',
   SCHEDULE_LOCATION: 'scheduleLocation',
+  SCHEDULE_DATES: 'scheduleDates',
   SCHEDULE_WORKERS: 'scheduleWorkers',
 };
 

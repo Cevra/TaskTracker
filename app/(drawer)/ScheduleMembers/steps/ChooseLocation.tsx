@@ -1,11 +1,11 @@
 import React, { useState, useMemo } from 'react';
 import { SafeAreaView, View, Text } from 'react-native';
 import { useRouter } from 'expo-router';
+import { Drawer } from 'expo-router/drawer';
 import UnsafeBubbleLayout from '@/layouts/UnsafeBubbles';
 import Locations from '@/components/Locations';
 import Search from '@/components/Search';
 import { CardAction } from '@/components/Card';
-import BottomNavigation from '@/components/BottomNavigation';
 import { FEATURES, STORAGE_KEYS } from '@/constants';
 import { Storage } from '@/services/storage';
 import ChevronRight from '@assets/icons/chevron-right.svg';
@@ -22,9 +22,12 @@ export default function ChooseLocation() {
 
   return (
     <UnsafeBubbleLayout>
+      <Drawer.Screen
+        options={{ title: 'Choose Location', headerShown: false }}
+      />
       <SafeAreaView className="w-full h-full justify-between">
         <View className="w-full flex justify-center items-center mt-10 h-10">
-          <Text className="text-2xl font-poppins">Choose location</Text>
+          <Text className="text-2xl font-poppins">Choose Location</Text>
         </View>
         {FEATURES.search && (
           <Search
@@ -39,8 +42,14 @@ export default function ChooseLocation() {
           <Locations
             actionType={CardAction.CHECKBOX}
             onAction={async (loc) => {
+              if (loc?.id === location?.id) {
+                setLocation(null);
+                return;
+              }
+
               if (loc?.id) {
                 setLocation(loc);
+                return;
               }
             }}
           ></Locations>
@@ -68,7 +77,6 @@ export default function ChooseLocation() {
             </TouchableOpacity>
           )}
         </View>
-        <BottomNavigation />
       </SafeAreaView>
     </UnsafeBubbleLayout>
   );

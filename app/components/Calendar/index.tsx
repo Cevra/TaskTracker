@@ -27,8 +27,6 @@ const INCREMENT = 1;
 const DECREMENT = -1;
 
 type CalendarProps = {
-  workerIds?: string[];
-  showAvailableDays?: boolean;
   hideModal?: boolean;
   isFocused?: boolean;
   onItemClick?: (item: CalendarDay) => void;
@@ -43,8 +41,6 @@ const getDefault = () => {
 };
 
 export default function Calendar({
-  workerIds,
-  showAvailableDays,
   hideModal,
   onItemClick,
   selectedDates,
@@ -99,15 +95,12 @@ export default function Calendar({
     ({ item }: CalendarItemProps) => {
       const schedule = schedules[item.key];
       const isSelected = selectedDates?.some((d) => d.key === item.key);
-      const isAvailable = showAvailableDays
-        ? !schedule?.workers?.some((w) => workerIds?.includes(w.id))
-        : false;
 
       return (
         <Animated.View>
           <TouchableOpacity
             onPress={() => {
-              if (onItemClick && isAvailable) {
+              if (onItemClick) {
                 onItemClick(item);
                 return;
               }
@@ -123,7 +116,6 @@ export default function Calendar({
           >
             <CalendarItem
               isSelected={isSelected}
-              isAvailable={isAvailable}
               schedule={schedule}
               item={item}
               isForWorker={user?.type === 'worker'}
@@ -132,15 +124,7 @@ export default function Calendar({
         </Animated.View>
       );
     },
-    [
-      schedules,
-      workerIds,
-      onItemClick,
-      hideModal,
-      selectedDates,
-      showAvailableDays,
-      user?.type,
-    ],
+    [schedules, onItemClick, hideModal, selectedDates, user?.type],
   );
 
   const onUpdate = useCallback(

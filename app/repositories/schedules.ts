@@ -56,22 +56,35 @@ class Schedules {
     return Object.values(members);
   }
 
+  async getWorkersForDays(dates: string[]): Promise<ScheduleMember[]> {
+    const q = query(
+      collection(db, this.#collectionName),
+      where('scheduledAt', 'array-contains', dates),
+    );
+
+    const querySnapshot = await getDocs(q);
+    const members: Record<string, ScheduleMember> = {};
+    querySnapshot.forEach((doc) => {
+      const schedule = doc.data() as Schedule;
+      schedule.workers?.map((w) => {
+        members[w.id] = w;
+      });
+    });
+
+    return Object.values(members);
+  }
+
   async getForRange(
     userId: string,
     type: 'worker' | 'company',
-    start: Date,
-    end: Date,
+    dates: string[],
   ): Promise<Record<string, Schedule>> {
-    const startTimestamp = Timestamp.fromDate(start);
-    const endTimestamp = Timestamp.fromDate(end);
-
     const q = query(
       collection(db, this.#collectionName),
       type === 'company'
         ? where('createdById', '==', userId)
         : where('workerIds', 'array-contains', userId),
-      where('scheduledAt', '>=', startTimestamp),
-      where('scheduledAt', '<=', endTimestamp),
+      where('scheduledAt', 'array-contains', dates),
     );
     const querySnapshot = await getDocs(q);
     const schedules: Record<string, Schedule> = {};

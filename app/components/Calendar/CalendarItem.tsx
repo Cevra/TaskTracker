@@ -28,7 +28,6 @@ export default function CalendarItem({
   item,
   schedule,
   isSelected,
-  isAvailable,
   isForWorker,
 }: CalendarItemProps) {
   const { isActive, date } = item;
@@ -36,11 +35,7 @@ export default function CalendarItem({
   return (
     <View className="mx-[1px] mt-2">
       <View className="w-full text-center flex justify-center items-center">
-        <View
-          className={`w-6 rounded-2xl ${isAvailable ? 'bg-[#D9D9D9]' : ''} ${
-            isSelected ? 'bg-[#fff]' : ''
-          }`}
-        >
+        <View className={`w-6 rounded-2xl ${isSelected ? 'bg-[#fff]' : ''}`}>
           <Text
             className={`w-full text-xs text-center font-bold ${
               isActive ? 'text-black' : 'text-gray-400'

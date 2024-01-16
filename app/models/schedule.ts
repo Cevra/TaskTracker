@@ -6,7 +6,7 @@ export class Schedule {
   constructor(
     public readonly createdById: string,
     public readonly company: string,
-    public readonly scheduledAt: Date,
+    public readonly scheduledAt: string,
     public readonly location: ScheduleLocation,
     public readonly workers: ScheduleMember[],
     public readonly workerIds: string[],
@@ -29,8 +29,7 @@ export class Schedule {
       workers: this.workers.map((w) => ({
         id: w.id,
         name: w.name,
-        time: w.time,
-        note:w.note,
+        note: w.note,
       })),
       workerIds: this.workerIds,
     };
