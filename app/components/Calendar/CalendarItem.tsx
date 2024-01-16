@@ -15,9 +15,11 @@ const MAX_IN_CELL = 5;
 
 const Employee = ({ name, color }: { name: string; color?: string }) => {
   return (
-    <Text style={{ color: color ?? '#000' }} className={`text-[7px] mb-[5px]`}>
-      {name}
-    </Text>
+    <View className="mb-[5px]">
+      <Text style={{ color: color ?? '#000' }} className={`text-[7px]`}>
+        {name}
+      </Text>
+    </View>
   );
 };
 
@@ -53,7 +55,7 @@ export default function CalendarItem({
             {schedule?.workers?.length &&
               schedule.workers.length > MAX_IN_CELL && (
                 <View className="w-full flex justify-center items-center">
-                  <View className="px-[4px] py-[2px] bg-slate-400 rounded-2xl">
+                  <View className="px-[4px] py-[2px] bg-slate-200 rounded-2xl">
                     <Text className="text-[8px]">
                       +{schedule.workers.length - MAX_IN_CELL}
                     </Text>

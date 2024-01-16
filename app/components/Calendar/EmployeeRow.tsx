@@ -87,6 +87,7 @@ export default function EmployeeRowEdit({
           items={options.locations.map((l) => ({
             label: l.city!,
             value: l.id,
+            key: `${l.id}-${worker.id}`,
           }))}
         />
       </View>

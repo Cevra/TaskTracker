@@ -112,7 +112,7 @@ export interface SelectedDate {
 }
 
 type BaseMailOptions = {
-  to: string;
+  to: string[];
   from: string;
   subject?: string;
 };

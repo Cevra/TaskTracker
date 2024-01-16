@@ -6,7 +6,7 @@ import {
   ActivityIndicator,
   TouchableOpacity,
 } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useNavigation } from 'expo-router';
 import { Drawer } from 'expo-router/drawer';
 import { STORAGE_KEYS } from '@/constants';
 import { Storage } from '@/services/storage';
@@ -32,7 +32,7 @@ export default function AddNotes() {
     useState<ScheduleWorkerEntry | null>(null);
   const [isNoteModalVisible, setIsNoteModalVisible] = useState(false);
   const [schedules, setSchedules] = useState<Schedule[]>([]);
-  const router = useRouter();
+  const navigation = useNavigation();
 
   useEffect(() => {
     const getData = async () => {
@@ -82,7 +82,7 @@ export default function AddNotes() {
         });
 
         setTimeout(() => {
-          router.replace('/(drawer)/Calendar');
+          navigation.navigate('Calendar' as never);
         }, 1000);
       } catch (e) {
         Toast.show({
@@ -92,7 +92,7 @@ export default function AddNotes() {
         });
       }
     },
-    [router],
+    [navigation],
   );
 
   const onNoteSubmit = useCallback(

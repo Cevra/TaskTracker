@@ -58,7 +58,7 @@ class Schedules {
   async getWorkersForDays(dates: string[]): Promise<ScheduleMember[]> {
     const q = query(
       collection(db, this.#collectionName),
-      where('scheduledAt', 'array-contains', dates),
+      where('scheduledAt', 'in', dates),
     );
 
     const querySnapshot = await getDocs(q);
@@ -93,7 +93,6 @@ class Schedules {
     const schedules: Record<string, Schedule> = {};
 
     querySnapshot.forEach((doc) => {
-      console.log(doc);
       const data = doc.data() as Schedule;
       schedules[data.scheduledAt] = { id: doc.id, ...data } as Schedule;
     });

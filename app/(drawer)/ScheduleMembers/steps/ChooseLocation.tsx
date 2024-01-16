@@ -54,7 +54,15 @@ export default function ChooseLocation() {
             }}
           ></Locations>
         </View>
-        <View className="w-full flex items-end px-8 py-4">
+        <View className="w-full flex flex-row justify-between px-8 py-4">
+          <TouchableOpacity
+            className="rotate-180"
+            onPress={async () => {
+              navigation.back();
+            }}
+          >
+            <ChevronRight />
+          </TouchableOpacity>
           {!!location?.id && (
             <TouchableOpacity
               onPress={async () => {

@@ -37,7 +37,7 @@ export default function ChooseMembers() {
         (await store.get(STORAGE_KEYS.SCHEDULE_DATES)) ?? '[]',
       ) as string[];
       const takenWorkers = await ScheduleRepository.getWorkersForDays(dates);
-      const takenWorkerIds = new Set(...takenWorkers.map((w) => w.id));
+      const takenWorkerIds = new Set(takenWorkers.map((w) => w.id));
       const employedWorkers = await UserRepository.getEmployedFor(
         Auth.currentUser!.id!,
       );
@@ -51,6 +51,10 @@ export default function ChooseMembers() {
     };
 
     getData();
+
+    return () => {
+      setWorkers([]);
+    };
   }, []);
 
   return (
@@ -105,7 +109,15 @@ export default function ChooseMembers() {
             </View>
           )}
         </View>
-        <View className="w-full flex items-end px-8 py-4">
+        <View className="w-full flex flex-row justify-between px-8 py-4">
+          <TouchableOpacity
+            className="rotate-180"
+            onPress={async () => {
+              navigation.back();
+            }}
+          >
+            <ChevronRight />
+          </TouchableOpacity>
           {!!workers.length && (
             <TouchableOpacity
               onPress={async () => {
@@ -116,7 +128,7 @@ export default function ChooseMembers() {
                 await storage.set(
                   STORAGE_KEYS.SCHEDULE_WORKERS,
                   JSON.stringify(
-                    workers.map(
+                    Object.values(selected).map(
                       (w) =>
                         ({
                           id: w.id,
