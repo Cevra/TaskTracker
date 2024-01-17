@@ -1,6 +1,8 @@
 import type { MailerOptions } from 'types';
 import { SENDGRID_API_KEY } from '@env';
 
+const FROM = 'no-reply-tasktracker@meta5.io';
+
 export async function sendEmail(options: MailerOptions) {
   const content = [];
 
@@ -33,7 +35,7 @@ export async function sendEmail(options: MailerOptions) {
         },
       ],
       from: {
-        email: options.from,
+        email: options.from || FROM,
       },
       subject: options.subject,
       content,

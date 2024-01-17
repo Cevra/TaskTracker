@@ -29,7 +29,6 @@ const AddANewMember = () => {
     const auth = Auth.instance;
     try {
       const response = await sendEmail({
-        from: 'no-reply-tasktracker@meta5.io',
         to: [email],
         subject: `Welcome ${name} to TaskTracker!`,
         text: `You have been invited to join TaskTracker. Your password is: ${password}. Download the app from your app store and start clocking your hours!`,

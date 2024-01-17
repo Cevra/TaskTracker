@@ -22,7 +22,7 @@ export default function Profile() {
   const [editedValues, setEditedValues] = useState({
     phone: user?.phone || '',
     email: user?.email || '',
-    address: user?.address || '',
+    address: user?.company?.address || '',
     company: user?.company?.name || '',
   });
   const navigation = useRouter();
@@ -34,7 +34,7 @@ export default function Profile() {
       setEditedValues({
         phone: u?.phone || '',
         email: u?.email || '',
-        address: u?.address || '',
+        address: u?.company?.address || '',
         company: u?.company?.name || '',
       });
     };
@@ -42,15 +42,20 @@ export default function Profile() {
     getUser();
   }, []);
 
-  const items = useMemo(
-    () => [
+  const items = useMemo(() => {
+    const rows = [
       { key: 'phone', icon: PhoneIcon, value: editedValues.phone },
       { key: 'mail', icon: MailIcon, value: editedValues.email },
-      { key: 'address', icon: MapPinIcon, value: editedValues.address },
-      { key: 'company', icon: LayersIcon, value: editedValues.company },
-    ],
-    [editedValues],
-  );
+    ];
+
+    if (user?.type === 'company') {
+      rows.push(
+        { key: 'address', icon: MapPinIcon, value: editedValues.address },
+        { key: 'company', icon: LayersIcon, value: editedValues.company },
+      );
+    }
+    return rows;
+  }, [editedValues, user]);
 
   const handleSave = async () => {
     try {

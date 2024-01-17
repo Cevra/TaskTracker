@@ -12,6 +12,7 @@ import ChevronRight from '@assets/icons/chevron-right.svg';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Location } from '@/models/location';
 import { ScheduleLocation } from 'types';
+import { useIsFocused } from '@react-navigation/native';
 
 export default function ChooseLocation() {
   const [searchPhrase, setSearchPhrase] = useState('');
@@ -19,6 +20,11 @@ export default function ChooseLocation() {
   const [location, setLocation] = useState<Location | null>(null);
   const storage = useMemo(() => Storage.instance, []);
   const navigation = useRouter();
+  const isFocused = useIsFocused();
+
+  if (!isFocused) {
+    return null;
+  }
 
   return (
     <UnsafeBubbleLayout>

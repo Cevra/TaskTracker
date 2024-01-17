@@ -41,7 +41,11 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
 
       {type === 'company' && (
         <TouchableOpacity
-          onPress={() => navigateToScreen('ScheduleMembers')}
+          onPress={() =>
+            props.navigation.navigate('ScheduleMembers', {
+              screen: 'steps/ChooseDates',
+            })
+          }
           style={styles.button}
         >
           <Text className="text-white text-xl">Schedule a Member</Text>
@@ -52,7 +56,9 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
         onPress={() => navigateToScreen('Calendar')}
         style={styles.button}
       >
-        <Text className="text-white text-xl">Edit a Schedule</Text>
+        <Text className="text-white text-xl">
+          {type === 'company' ? 'Edit a Schedule' : 'View Schedule'}
+        </Text>
       </TouchableOpacity>
 
       {type === 'company' && (

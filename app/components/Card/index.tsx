@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import Check from '@assets/icons/check.svg';
 import Cross from '@assets/icons/cross.svg';
@@ -20,12 +20,17 @@ type CardProps = {
   date?: Date;
 };
 
-const Card = ({ color, title, subtitle, actionType, onAction }: CardProps) => {
-  const [isChecked, setIsChecked] = useState(false);
+const Card = ({
+  color,
+  title,
+  subtitle,
+  actionType,
+  onAction,
+  isChecked,
+}: CardProps) => {
   const textSize = title.length > 15 ? 'text-lg ' : 'text-xl';
 
   const onPress = useCallback(async () => {
-    setIsChecked(!isChecked);
     await onAction(!isChecked);
   }, [onAction, isChecked]);
 
@@ -43,7 +48,7 @@ const Card = ({ color, title, subtitle, actionType, onAction }: CardProps) => {
         <View
           className={`flex justify-center flex-cloumn ${
             color ? 'items-center' : 'items-start'
-          } m-5 h-full flex-1 pr-1 pt-1 pb-1`}
+          } m-5 h-full flex-1 pr-1 pt-1 pb-4`}
         >
           <Text className={`${textSize} text-slate-600 font-bold mt-3 `}>
             {title}

@@ -7,11 +7,12 @@ import { STORAGE_KEYS } from '@/constants';
 import { Storage } from '@/services/storage';
 import Calendar from '@/components/Calendar';
 import Default from '@/layouts/Default';
-import type { CalendarDay } from '@/components/Calendar/CalendarItem';
-import type { SelectedDate } from 'types';
+import type { CalendarDay, SelectedDate } from 'types';
 import ChevronRight from '@assets/icons/chevron-right.svg';
+import { useIsFocused } from '@react-navigation/native';
 
 export default function ChooseDates() {
+  const isFocused = useIsFocused();
   const [selectedDates, setSelectedDates] = useState<SelectedDate[]>([]);
   const storage = useMemo(() => Storage.instance, []);
   const navigation = useRouter();
@@ -45,6 +46,10 @@ export default function ChooseDates() {
     },
     [],
   );
+
+  if (!isFocused) {
+    return;
+  }
 
   return (
     <Default>

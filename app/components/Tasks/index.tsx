@@ -86,8 +86,8 @@ const Tasks = ({ user }: TasksProps) => {
   return (
     <View className="w-full px-5">
       <View className="w-full h-1/5 pt-5 mb-7 border-box flex-col space-y-5   bg-white rounded-3xl justify-center items-center ">
-        <View className="pt-5   w-full justify-center items-center">
-          <View className="  flex flex-row justify-center items-center">
+        <View className="pt-5 w-full justify-center items-center">
+          <View className="flex flex-row justify-center items-center">
             <Picker
               placeholder={{ label: 'Monthly', value: 'monthly' }}
               style={{
@@ -98,11 +98,12 @@ const Tasks = ({ user }: TasksProps) => {
                 inputIOS: style.pickerInput,
                 iconContainer: {
                   width: 30,
+                  paddingBottom: 2,
                 },
               }}
               onValueChange={(value) => setSelectedFrequency(value)}
               items={[
-                { label: 'Monthly   ', value: 'monthly' },
+                { label: 'Monthly', value: 'monthly' },
                 { label: 'Weekly', value: 'weekly' },
                 { label: 'Biweekly', value: 'biweekly' },
               ]}
@@ -119,14 +120,14 @@ const Tasks = ({ user }: TasksProps) => {
             {user.name}
           </Text>
         </View>
-        <View className=" flex border-t   justify-between items-center m-2 mb-6 w-full flex-row p-3 ">
-          <View className="  flex-row justify-center  items-center space-x-2">
+        <View className="flex border-t justify-between items-center m-2 mb-6 w-full flex-row p-3 ">
+          <View className="flex-row justify-center items-center space-x-2">
             <Circle className="" />
-            <Text className="text-xl   font-bold">TOTAL HOURS</Text>
+            <Text className="text-lg font-bold">TOTAL HOURS</Text>
           </View>
           <View className=" flex-row justify-center items-center space-x-2">
             <ClockIcon />
-            <Text className="text-xl  font-bold">{totalHours}</Text>
+            <Text className="text-xl font-bold">{totalHours}</Text>
           </View>
         </View>
       </View>
@@ -164,7 +165,7 @@ const style = StyleSheet.create({
   },
   pickerInput: {
     textAlign: 'center',
-    fontSize: 22,
+    fontSize: 18,
     color: '#000',
     fontWeight: 'bold',
     paddingRight: 20,

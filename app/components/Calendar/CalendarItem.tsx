@@ -13,10 +13,21 @@ export type CalendarItemProps = {
 
 const MAX_IN_CELL = 5;
 
-const Employee = ({ name, color }: { name: string; color?: string }) => {
+const Employee = ({
+  size,
+  name,
+  color,
+}: {
+  size?: number;
+  name: string;
+  color?: string;
+}) => {
   return (
     <View className="mb-[5px]">
-      <Text style={{ color: color ?? '#000' }} className={`text-[7px]`}>
+      <Text
+        style={{ color: color ?? '#000' }}
+        className={`text-[${size ?? '7'}px]`}
+      >
         {name}
       </Text>
     </View>
@@ -46,12 +57,22 @@ export default function CalendarItem({
       </View>
       <View className="w-[50px] h-28 space-y-1 bg-shade-blue rounded p-1">
         {isForWorker ? (
-          <Employee key={schedule?.id} name={schedule?.company ?? ''} />
+          <Employee
+            size={8}
+            key={schedule?.id}
+            name={schedule?.company ?? ''}
+          />
         ) : (
           <>
             {schedule?.workers
               ?.slice(0, MAX_IN_CELL)
-              .map((worker) => <Employee key={worker.id} name={worker.name} />)}
+              .map((worker) => (
+                <Employee
+                  color={worker.color}
+                  key={worker.id}
+                  name={worker.name}
+                />
+              ))}
             {schedule?.workers?.length &&
               schedule.workers.length > MAX_IN_CELL && (
                 <View className="w-full flex justify-center items-center">

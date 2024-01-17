@@ -11,7 +11,6 @@ import { Schedule } from '@/models/schedule';
 import EmployeeRow, { OnChangeProps } from './EmployeeRow';
 import { ScheduleRepository } from '@/repositories/schedules';
 import { UserRepository } from '@/repositories/users';
-import { User } from '@/models/user';
 import { LocationRepository } from '@/repositories/locations';
 import { Location } from '@/models/location';
 import { ScheduleMember } from 'types';
@@ -26,7 +25,7 @@ type CalendarDetailsCompanyProps = {
 };
 
 type DropdownOptions = {
-  workers: Partial<User>[];
+  workers: ScheduleMember[];
   locations: Location[];
 };
 
@@ -37,6 +36,7 @@ export function CalendarDetailsCompany({
 }: CalendarDetailsCompanyProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [isEdit, setIsEdit] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [workers, setWorkers] = useState<ScheduleMember[]>(
     schedule?.workers ?? [],
   );
@@ -64,7 +64,16 @@ export function CalendarDetailsCompany({
         );
 
         setOptions({
-          workers: availableWorkers,
+          workers: [
+            ...workers,
+            ...availableWorkers.map((w) => ({
+              id: w.id!,
+              email: w.email!,
+              name: w.name!,
+              color: w?.worker?.color,
+              location: schedule?.location,
+            })),
+          ],
           locations,
         });
         setIsLoading(false);
@@ -72,7 +81,7 @@ export function CalendarDetailsCompany({
     };
 
     getData();
-  }, [date, schedule?.workers]);
+  }, [date, schedule?.workers, schedule?.location]);
 
   const onChange = useCallback(
     ({ name, value, id }: OnChangeProps) => {
@@ -80,29 +89,12 @@ export function CalendarDetailsCompany({
         return;
       }
 
-      if (name === 'worker') {
-        const worker = workers.find((w) => w.id === id);
-
-        if (worker) {
-          setOptions((prev) => ({
-            ...prev,
-            workers: [...prev.workers.filter((w) => w.id !== value), worker],
-          }));
-        }
-      }
-
       setWorkers((prev) => {
         switch (name) {
           case 'worker': {
             const worker = options.workers.find((w) => w.id === value);
 
-            return worker
-              ? prev.map((w) =>
-                  w.id === id
-                    ? { ...w, name: worker.name!, id: worker.id! }
-                    : w,
-                )
-              : prev;
+            return worker ? prev.map((w) => (w.id === id ? worker : w)) : prev;
           }
           case 'location': {
             const newLocation = options.locations.find((l) => l.id === value);
@@ -129,7 +121,7 @@ export function CalendarDetailsCompany({
         }
       });
     },
-    [options.workers, options.locations, workers],
+    [options.workers, options.locations],
   );
 
   const handleNoteIconClick = useCallback((worker: ScheduleMember) => {
@@ -168,8 +160,13 @@ export function CalendarDetailsCompany({
             onPress={async (e) => {
               e.stopPropagation();
 
+              if (isSaving) {
+                return;
+              }
+
               if (isEdit) {
                 try {
+                  setIsSaving(true);
                   await onUpdate(workers);
                   Toast.show({
                     type: 'success',
@@ -182,7 +179,10 @@ export function CalendarDetailsCompany({
                   });
                 }
 
-                setTimeout(() => setIsEdit(false), 1000);
+                setTimeout(() => {
+                  setIsEdit(false);
+                  setIsSaving(false);
+                }, 1000);
                 return;
               }
 
@@ -190,7 +190,15 @@ export function CalendarDetailsCompany({
             }}
           >
             <Text className="text-2xl text-white font-bold">
-              {isEdit ? 'Save' : 'Edit'}
+              {isEdit ? (
+                isSaving ? (
+                  <ActivityIndicator size="small" color="#fff" />
+                ) : (
+                  'Save'
+                )
+              ) : (
+                'Edit'
+              )}
             </Text>
           </TouchableOpacity>
         </View>
@@ -206,17 +214,26 @@ export function CalendarDetailsCompany({
             worker={worker}
             location={worker.location || schedule!.location!}
             isEdit={isEdit}
-            options={options}
+            options={{
+              ...options,
+              workers: options.workers.filter(
+                (w) =>
+                  w.id === worker.id || workers.every((w2) => w2.id !== w.id),
+              ),
+            }}
             onChange={onChange}
             onNoteIconClick={() => handleNoteIconClick(worker)}
           />
         ))}
       </ScrollView>
-      {selectedWorker && (
+      {isNoteModalVisible && selectedWorker && (
         <NoteModal
           worker={selectedWorker}
           isVisible={isNoteModalVisible}
-          setIsVisible={setIsNoteModalVisible}
+          setIsVisible={(isVisible) => {
+            setIsNoteModalVisible(isVisible);
+            setSelectedWorker(null);
+          }}
           onNoteSubmit={(note) => handleNoteSubmit(note, selectedWorker)}
         />
       )}

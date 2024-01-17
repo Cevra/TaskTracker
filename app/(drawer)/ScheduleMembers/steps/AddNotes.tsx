@@ -20,6 +20,8 @@ import { ScheduleRepository } from '@/repositories/schedules';
 import Toast from 'react-native-toast-message';
 import NoteModal from '@/components/NoteModal';
 import BubbleLayout from '@/layouts/Bubbles';
+import { sendEmail } from '@/utils/mail';
+import { useIsFocused } from '@react-navigation/native';
 
 type ScheduleWorkerEntry = {
   worker: ScheduleMember;
@@ -27,6 +29,7 @@ type ScheduleWorkerEntry = {
 };
 
 export default function AddNotes() {
+  const isFocused = useIsFocused();
   const [isLoading, setIsLoading] = useState(true);
   const [scheduleWorker, setScheduleWorker] =
     useState<ScheduleWorkerEntry | null>(null);
@@ -59,7 +62,7 @@ export default function AddNotes() {
             user.company!.name,
             date,
             location,
-            workers,
+            workers.map((w: ScheduleMember) => ({ ...w })),
             workers.map((w: ScheduleMember) => w.id),
           ),
       );
@@ -80,6 +83,24 @@ export default function AddNotes() {
           type: 'success',
           text1: 'Schedule added!',
         });
+        const store = Storage.instance;
+
+        const workers = JSON.parse(
+          (await store.get(STORAGE_KEYS.SCHEDULE_WORKERS)) ?? '[]',
+        );
+        const dates = JSON.parse(
+          (await store.get(STORAGE_KEYS.SCHEDULE_DATES)) ?? '[]',
+        ) as string[];
+        const user = await Auth.instance.user();
+
+        await sendEmail({
+          to: [...new Set<string>(workers.map((w: ScheduleMember) => w.email))],
+          subject: `You have been scheduled for work!`,
+          text: `${user?.company
+            ?.name} has scheduled you for work on the following dates: ${dates.join(
+            ', ',
+          )}`,
+        });
 
         setTimeout(() => {
           navigation.navigate('Calendar' as never);
@@ -99,9 +120,10 @@ export default function AddNotes() {
     (note: string, scheduleWorkerEntry: ScheduleWorkerEntry) => {
       const { worker, schedule } = scheduleWorkerEntry!;
       setScheduleWorker(null);
+      setIsNoteModalVisible(false);
       setSchedules((prev) =>
         prev.map((s) => {
-          if (s.id === schedule.id) {
+          if (s.scheduledAt === schedule.scheduledAt) {
             s.workers.forEach((w) => {
               if (w.id === worker.id) {
                 w.note = note;
@@ -115,6 +137,10 @@ export default function AddNotes() {
     },
     [],
   );
+
+  if (!isFocused) {
+    return null;
+  }
 
   return (
     <BubbleLayout enableKeyboardAvoid={false}>
@@ -175,11 +201,14 @@ export default function AddNotes() {
           />
         </View>
       </SafeAreaView>
-      {scheduleWorker && (
+      {isNoteModalVisible && scheduleWorker && (
         <NoteModal
           worker={scheduleWorker.worker}
           isVisible={isNoteModalVisible}
-          setIsVisible={setIsNoteModalVisible}
+          setIsVisible={(isVisible) => {
+            setIsNoteModalVisible(isVisible);
+            setScheduleWorker(null);
+          }}
           onNoteSubmit={(note) => onNoteSubmit(note, scheduleWorker)}
         />
       )}

@@ -63,16 +63,12 @@ export default function EmployeeRowEdit({
       <View className="flex-1 px-2 py-1 w-full border-r">
         <Picker
           disabled={!isEdit}
-          placeholder="Worker"
           style={pickerStyle}
           onValueChange={(value) =>
             onChange({ name: 'worker', value, id: worker.id })
           }
           value={worker.id}
-          items={[
-            ...options.workers.map((w) => ({ label: w.name!, value: w.id })),
-            { label: worker.name, value: worker.id },
-          ]}
+          items={options.workers.map((w) => ({ label: w.name!, value: w.id }))}
         />
       </View>
       <View className="flex-1 px-2 py-1 w-full">
@@ -82,7 +78,6 @@ export default function EmployeeRowEdit({
             onChange({ name: 'location', value, id: worker.id })
           }
           value={location.id}
-          placeholder="Location"
           style={pickerStyle}
           items={options.locations.map((l) => ({
             label: l.city!,

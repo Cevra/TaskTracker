@@ -27,7 +27,6 @@ const NoteModal: React.FC<NoteModalProps> = ({
   onNoteSubmit,
 }) => {
   const [note, setNote] = useState(worker?.note ?? '');
-
   const handleNoteSubmit = () => {
     onNoteSubmit(note);
     setNote('');
@@ -66,7 +65,7 @@ const NoteModal: React.FC<NoteModalProps> = ({
             <Text style={{ fontSize: 18, marginBottom: 10, color: 'black' }}>
               Add Note
             </Text>
-            <TouchableOpacity onPress={() => onNoteSubmit(note)}>
+            <TouchableOpacity onPress={() => setIsVisible(false)}>
               <Cross width={12} height={12} />
             </TouchableOpacity>
           </View>
