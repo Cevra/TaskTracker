@@ -20,6 +20,7 @@ import { Auth } from '@/services/auth';
 import { UserRepository } from '@/repositories/users';
 import type { ScheduleLocation, ScheduleMember } from 'types';
 import ChevronRight from '@assets/icons/chevron-right.svg';
+import { useIsFocused } from '@react-navigation/native';
 
 export default function ChooseMembers() {
   const [searchPhrase, setSearchPhrase] = useState('');
@@ -29,6 +30,7 @@ export default function ChooseMembers() {
   const [clicked, setClicked] = useState(false);
   const storage = useMemo(() => Storage.instance, []);
   const navigation = useRouter();
+  const isFocused = useIsFocused();
 
   useEffect(() => {
     const getData = async () => {
@@ -56,6 +58,10 @@ export default function ChooseMembers() {
       setWorkers([]);
     };
   }, []);
+
+  if (!isFocused) {
+    return null;
+  }
 
   return (
     <UnsafeBubbleLayout>
@@ -135,6 +141,8 @@ export default function ChooseMembers() {
                           name: w.name,
                           location,
                           note: '',
+                          email: w.email,
+                          color: w.worker?.color,
                         }) as ScheduleMember,
                     ),
                   ),

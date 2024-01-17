@@ -16,20 +16,25 @@ export class Schedule {
     string,
     string | string[] | ScheduleLocation | Date | ScheduleMember[] | undefined
   > {
+    const location = {
+      id: this.location.id,
+      city: this.location.city,
+      country: this.location.country,
+      address: this.location.address,
+    };
+
     return {
       createdById: this.createdById,
       company: this.company,
       scheduledAt: this.scheduledAt,
-      location: {
-        id: this.location.id,
-        city: this.location.city,
-        country: this.location.country,
-        address: this.location.address,
-      },
+      location,
       workers: this.workers.map((w) => ({
         id: w.id,
         name: w.name,
         note: w.note,
+        color: w.color,
+        email: w.email,
+        location,
       })),
       workerIds: this.workerIds,
     };

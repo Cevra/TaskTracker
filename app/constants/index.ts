@@ -46,3 +46,26 @@ export const WORKER_EXPERIENCES: Record<string, string> = {
   flooring: 'Flooring',
   drywall: 'Drywall',
 };
+
+export const COLORS = [
+  '#001F3F',
+  '#333333',
+  '#36454F',
+  '#8B4513',
+  '#228B22',
+  '#800000',
+  '#FF4500',
+  '#6A5ACD',
+  '#8A2BE2',
+  '#483D8B',
+  '#2E8B57',
+  '#9932CC',
+  '#B22222',
+  '#20B2AA',
+  '#4169E1',
+  '#DC143C',
+  '#556B2F',
+  '#FF8C00',
+  '#9932CC',
+  '#8B008B',
+];

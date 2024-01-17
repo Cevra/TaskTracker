@@ -22,6 +22,7 @@ import CalendarDetailsModal from './CalendarDetailsModal';
 import CalendarItem, { CalendarItemProps } from './CalendarItem';
 import { User } from '@/models/user';
 import type { CalendarDay, ScheduleMember, SelectedDate } from 'types';
+import { sendEmail } from '@/utils/mail';
 
 const INCREMENT = 1;
 const DECREMENT = -1;
@@ -134,12 +135,39 @@ export default function Calendar({
       const schedule = schedules[day.key];
 
       if (schedule?.id) {
+        const newWorkerIds = new Set(workers.map((w) => w.id));
         await ScheduleRepository.update(schedule.id, {
           workers,
+          workerIds: [...newWorkerIds],
         });
 
+        const user = await Auth.instance.user();
+        const removed = schedule.workers?.filter(
+          (w) => !newWorkerIds.has(w.id),
+        );
+        const added = workers.filter(
+          (w) => !schedule.workerIds?.includes(w.id),
+        );
+        const date = format(day.date, 'yyyy-MM-dd');
+
+        await Promise.all([
+          sendEmail({
+            to: [...new Set<string>(removed?.map((w) => w.email) ?? [])],
+            subject: `You have been removed from a schedule: ${date}`,
+            text: `You are no longer scheduled to work for ${user?.company?.name} on ${date}`,
+          }),
+          sendEmail({
+            to: [...new Set<string>(added?.map((w) => w.email) ?? [])],
+            subject: `You have been added to a schedule: ${date}`,
+            text: `You are scheduled to work for ${user?.company?.name} on ${date}`,
+          }),
+        ]);
+
         setSchedules((old) => {
-          return { ...old, [day.key]: { ...schedule, workers } };
+          return {
+            ...old,
+            [day.key]: { ...schedule, workers, workerIds: [...newWorkerIds] },
+          };
         });
       }
     },

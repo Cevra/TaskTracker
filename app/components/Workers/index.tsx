@@ -4,6 +4,7 @@ import Card, { CardAction } from '@/components/Card';
 import { Auth } from '@/services/auth';
 import { User } from '@/models/user';
 import { UserRepository } from '@/repositories/users';
+import { Text } from 'react-native';
 interface WorkersProps {
   actionType: CardAction;
   onAction: (user: User) => Promise<void>;
@@ -36,24 +37,30 @@ const Workers = ({ actionType, onAction }: WorkersProps) => {
 
   return (
     <ScrollView className="h-full   flex w-full px-5">
-      {workers.map((u: User) => {
-        return (
-          <Card
-            actionType={actionType}
-            title={`${u.name ?? ''}`.trim()}
-            subtitle={''}
-            color={`${u.worker?.color ?? '#000'}`}
-            onAction={() => {
-              if (actionType === CardAction.CHECKBOX) {
-                setSelected({ ...selected, [u.id]: u.id });
-              }
-              return onAction(u);
-            }}
-            isChecked={!!selected[u.id]}
-            key={u.id}
-          />
-        );
-      })}
+      {workers.length === 0 ? (
+        <View className="h-full justify-center items-center flex w-full pl-2">
+          <Text>No workers available. Please add invite someone first.</Text>
+        </View>
+      ) : (
+        workers.map((u: User) => {
+          return (
+            <Card
+              actionType={actionType}
+              title={`${u.name ?? ''}`.trim()}
+              subtitle={''}
+              color={`${u.worker?.color ?? '#000'}`}
+              onAction={() => {
+                if (actionType === CardAction.CHECKBOX) {
+                  setSelected({ ...selected, [u.id]: u.id });
+                }
+                return onAction(u);
+              }}
+              isChecked={!!selected[u.id]}
+              key={u.id}
+            />
+          );
+        })
+      )}
     </ScrollView>
   );
 };

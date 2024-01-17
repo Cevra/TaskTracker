@@ -91,6 +91,8 @@ export interface ScheduleMember {
   name: string;
   note?: string;
   location?: ScheduleLocation;
+  email: string;
+  color?: string;
 }
 
 export interface DailySchedule {
@@ -113,7 +115,7 @@ export interface SelectedDate {
 
 type BaseMailOptions = {
   to: string[];
-  from: string;
+  from?: string;
   subject?: string;
 };
 
